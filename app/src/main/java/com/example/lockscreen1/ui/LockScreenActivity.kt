@@ -31,9 +31,6 @@ class LockScreenActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         dao= PasswordDatabase.getInstance(this).dao()
 
-        val a=dao.getAllContact()
-        tvPassword?.text = a.key
-
         makeCurrentFragment(CallFragment())
 
         bottomNav.setOnNavigationItemSelectedListener {
@@ -84,4 +81,3 @@ class LockScreenActivity : AppCompatActivity() {
     }
 
 }
-
