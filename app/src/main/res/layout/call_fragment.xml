@@ -11,11 +11,10 @@
         android:layout_height="50dp"
         android:padding="8dp"
         android:background="#36d951"
-        android:src="@drawable/ic_baseline_call_24"
+        android:src="@drawable/ic_white_call_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="55dp"
         />
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="match_parent"

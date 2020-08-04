@@ -45,6 +45,10 @@ class CallFragment : Fragment(R.layout.call_fragment) {
             if(str.isNotEmpty())
                 tvEnter.text = str.substring(0, str.length - 1)
         }
+        btn_clear.setOnLongClickListener {
+            tvEnter.text = " "
+            return@setOnLongClickListener true
+        }
     }
 
     private fun setTextFields(str:String){
