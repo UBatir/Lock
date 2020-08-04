@@ -29,10 +29,10 @@ class CustomDialog(private val activity: LockScreenActivity) : Dialog(activity) 
             }else{
                 etPasswordDeActivator.text.clear()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    v?.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                    v?.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
                 } else {
                     //deprecated in API 26
-                    v?.vibrate(500);
+                    v?.vibrate(100);
                 }
                 Toast.makeText(context,"Вы не правильно ввели пароль!",Toast.LENGTH_LONG).show()
             }
