@@ -1,4 +1,4 @@
-package com.example.lockscreen
+package com.example.lockscreen1
 
 import org.junit.Test
 

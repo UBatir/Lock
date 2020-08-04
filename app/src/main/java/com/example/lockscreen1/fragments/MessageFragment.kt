@@ -1,10 +1,10 @@
-package com.example.lockscreen.fragments
+package com.example.lockscreen1.fragments
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.example.lockscreen.R
+import com.example.lockscreen1.R
 
 class MessageFragment : Fragment(R.layout.message_fragment) {
 

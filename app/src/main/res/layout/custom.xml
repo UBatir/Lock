@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="300dp"
+    android:minWidth="280dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
@@ -24,7 +25,6 @@
         android:text="Вводите пароль чтобы деактивировать приложение : "
         android:textSize="20sp"
         android:textColor="#646965"
-        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="16dp"/>

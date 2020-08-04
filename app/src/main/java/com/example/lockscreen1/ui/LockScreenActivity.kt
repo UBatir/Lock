@@ -1,19 +1,19 @@
-package com.example.lockscreen.ui
+package com.example.lockscreen1.ui
 
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils.replace
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.lockscreen.R
-import com.example.lockscreen.fragments.CallFragment
-import com.example.lockscreen.fragments.ContactFragment
-import com.example.lockscreen.fragments.MessageFragment
+import com.example.lockscreen1.R
+import com.example.lockscreen1.data.PasswordDatabase
+import com.example.lockscreen1.data.dao.PasswordDao
+import com.example.lockscreen1.fragments.CallFragment
+import com.example.lockscreen1.fragments.ContactFragment
+import com.example.lockscreen1.fragments.MessageFragment
 import kotlinx.android.synthetic.main.activity_lock_screen.*
 
 
@@ -21,7 +21,7 @@ class LockScreenActivity : AppCompatActivity() {
     private val callFragment = CallFragment()
     private val smsFragment = MessageFragment()
     private val contactFragment = ContactFragment()
-
+    lateinit var dao: PasswordDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +29,10 @@ class LockScreenActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         setSupportActionBar(toolbar)
+        dao= PasswordDatabase.getInstance(this).dao()
+
+        val a=dao.getAllContact()
+        tvPassword?.text = a.key
 
         makeCurrentFragment(CallFragment())
 
@@ -43,17 +47,17 @@ class LockScreenActivity : AppCompatActivity() {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-       menuInflater.inflate(R.menu.pop_menu, menu)
-        return super.onCreateOptionsMenu(menu)
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.pop_menu, menu)
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.exit -> {
-                finish()
-                onDestroy()
-            }
+            R.id.exit->{
+                val dialog=CustomDialog(this)
+                dialog.show()
+                return true}
         }
         return super.onOptionsItemSelected(item)
     }

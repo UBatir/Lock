@@ -1,4 +1,4 @@
-package com.example.lockscreen
+package com.example.lockscreen1
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

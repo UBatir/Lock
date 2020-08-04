@@ -7,12 +7,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.LockScreenActivity">
 
+    <TextView
+        android:id="@+id/tvPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:text="5wfewhfukvkuvc"
+        android:textSize="20sp"
+        android:layout_margin="16dp"/>
 
     <RelativeLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="parent"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
     </RelativeLayout>
