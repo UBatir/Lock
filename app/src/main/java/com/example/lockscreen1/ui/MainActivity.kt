@@ -47,4 +47,5 @@ class MainActivity : AppCompatActivity() {
     private fun addPassword(model:Password){
         dao.insertContact(model)
     }
+
 }

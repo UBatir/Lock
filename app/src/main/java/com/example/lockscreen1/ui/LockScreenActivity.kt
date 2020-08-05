@@ -17,7 +17,7 @@ import com.example.lockscreen1.fragments.MessageFragment
 import kotlinx.android.synthetic.main.activity_lock_screen.*
 
 
-class LockScreenActivity : AppCompatActivity() {
+class LockScreenActivity : AppCompatActivity(), DestroyActivity {
     private val callFragment = CallFragment()
     private val smsFragment = MessageFragment()
     private val contactFragment = ContactFragment()
@@ -52,7 +52,7 @@ class LockScreenActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.exit->{
-                val dialog=CustomDialog(this)
+                val dialog=CustomDialog(this,this)
                 dialog.show()
                 return true}
         }
@@ -78,6 +78,10 @@ class LockScreenActivity : AppCompatActivity() {
         val activityManager = applicationContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             activityManager.moveTaskToFront(taskId, 0)
         super.onPause()
+    }
+
+    override fun destroyActivity() {
+        onDestroy()
     }
 
 }

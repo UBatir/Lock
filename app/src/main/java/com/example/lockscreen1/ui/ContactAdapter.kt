@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.lockscreen1.R
 import kotlinx.android.synthetic.main.rv_item.view.*
 
-class ContactAdapter : RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
+class ContactAdapter(private val listener: CallInterface): RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
 
-    var item : List<ContactData> = listOf()
+
+    var item : MutableList<ContactData> = mutableListOf()
     set(value) {
         field = value
         notifyDataSetChanged()
@@ -19,7 +20,12 @@ class ContactAdapter : RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() 
             fun popMod(data: ContactData){
                 itemView.tvContactName.text = data.name
                 itemView.tvContactNumber.text = data.number
+                itemView.btnCall.setOnClickListener {
+                    listener.onCallItemClick(data.number)
+                }
+
             }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {

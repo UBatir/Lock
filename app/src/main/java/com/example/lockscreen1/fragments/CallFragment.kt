@@ -5,14 +5,15 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
+import com.example.lockscreen1.ui.CallInterface
 import kotlinx.android.synthetic.main.call_fragment.*
 
 class CallFragment : Fragment(R.layout.call_fragment) {
@@ -36,7 +37,7 @@ class CallFragment : Fragment(R.layout.call_fragment) {
         btn_num8.setOnClickListener{ setTextFields("8")}
         btn_num9.setOnClickListener{ setTextFields("9")}
         btn_star.setOnClickListener { setTextFields("*") }
-        btn_reshetka.setOnClickListener { setTextFields("") }
+        btn_reshetka.setOnClickListener { setTextFields("#") }
         mTextView = tvEnter
         btn_call.setOnClickListener {
             makePhoneCall()

@@ -11,9 +11,10 @@ import com.example.lockscreen1.R
 import com.example.lockscreen1.data.PasswordDatabase
 import com.example.lockscreen1.data.dao.PasswordDao
 import kotlinx.android.synthetic.main.custom.*
+import java.util.*
 
 
-class CustomDialog(private val activity: LockScreenActivity) : Dialog(activity) {
+class CustomDialog(private val activity: LockScreenActivity, private val listener: DestroyActivity) : Dialog(activity) {
 
     lateinit var dao:PasswordDao
 
@@ -25,8 +26,8 @@ class CustomDialog(private val activity: LockScreenActivity) : Dialog(activity) 
         val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
         btnPositive.setOnClickListener {
             if(etPasswordDeActivator.text.toString()==a.key){
+                listener.destroyActivity()
                 dao.deletePassword(a)
-                activity.finish()
             }else{
                 etPasswordDeActivator.text.clear()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

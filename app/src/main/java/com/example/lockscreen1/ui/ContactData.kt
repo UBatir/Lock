@@ -1,6 +1,3 @@
 package com.example.lockscreen1.ui
 
-class ContactData(){
-    val name = " "
-    val number= " "
-}
+class ContactData(var name: String, var number:String)
