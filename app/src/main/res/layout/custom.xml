@@ -9,11 +9,12 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:padding="8dp"
         android:text="Вы точно хотите отключить? "
         android:textColor="@android:color/white"
-        android:background="@android:color/black"
+        android:background="#5a9216"
         android:gravity="center"
-        android:textSize="25sp"
+        android:textSize="21sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -23,17 +24,23 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/title"
         android:text="Вводите пароль чтобы деактивировать приложение : "
-        android:textSize="20sp"
+        android:textSize="18sp"
+        android:gravity = "center"
         android:textColor="#646965"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="46dp"
+
+        />
     <EditText
         android:id="@+id/etPasswordDeActivator"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="36dp"
         android:padding="8dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +48,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:hint="Пароль"
         android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        />
     <Button
         android:id="@+id/btnPositive"
         android:layout_width="wrap_content"

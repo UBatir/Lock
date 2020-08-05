@@ -21,20 +21,25 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:screenOrientation="portrait"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.lockscreen1.ui.LockScreenActivity">
+        <activity android:name="com.example.lockscreen1.ui.LockScreenActivity"
+            android:screenOrientation="portrait"
+            >
             <intent-filter>
                 <category android:name="android.intent.category.HOME" />
             <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.lockscreen1.ui.MainActivity">
+        <activity android:name="com.example.lockscreen1.ui.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name="com.example.lockscreen1.ui.StartActivityOnBootReceiver">
+        <receiver android:name="com.example.lockscreen1.ui.StartActivityOnBootReceiver"
+            android:screenOrientation="portrait">
              <intent-filter>
                  <action android:name="android.intent.action.BOOT_COMPLETED"/>
                  <action android:name="android.intent.action.QUICBOOT_POWERON"/>

@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "password")
 class Password (
-    @PrimaryKey(autoGenerate = true) val id:Int=0,
+    @PrimaryKey(autoGenerate = true) val id:Int=1,
     @ColumnInfo(name="key") var key:String
 )
