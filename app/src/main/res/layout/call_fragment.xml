@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -184,16 +183,32 @@
         android:gravity="center"
         android:textSize="28sp"/>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="match_parent"
+        android:id="@+id/gd3"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="match_parent"
+        android:id="@+id/gd4"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:textColor="@android:color/background_dark"
         android:layout_height="50dp"
         android:id="@+id/tvEnter"
         android:gravity="center"
-        android:layout_marginStart="25dp"
+        android:maxLines="1"
+        android:layout_marginStart="15dp"
+        android:maxLength="15"
         android:textSize="25sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_clear"
+        app:layout_constraintStart_toStartOf="@id/gd4"
+        app:layout_constraintEnd_toEndOf="@id/gd3"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toTopOf="@id/btn_num1"
         android:layout_marginBottom="16dp"/>
     <ImageView

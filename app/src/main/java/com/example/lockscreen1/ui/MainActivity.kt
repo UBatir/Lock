@@ -19,20 +19,29 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         supportActionBar?.hide()
         dao=PasswordDatabase.getInstance(this).dao()
-
-        btnActivator.setOnClickListener {
-            if (etPassword.text.isNotEmpty()){
-                val a=etPassword.text.toString()
-                addPassword(Password(1,a))
-                Toast.makeText(this, "Вы успешно активировали программу", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, LockScreenActivity::class.java)
-                startActivity(intent)
-                finish()
-            }else{
-                Toast.makeText(this, "Заполните поле !!!", Toast.LENGTH_SHORT).show()
+        val b:Password?=dao.getPassword()
+        if(b?.id==1) {
+            val intent = Intent(this, LockScreenActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            btnActivator.setOnClickListener {
+                if (etPassword.text.isNotEmpty()) {
+                    val a = etPassword.text.toString()
+                    addPassword(Password(1, a))
+                    Toast.makeText(
+                        this,
+                        "Вы успешно активировали программу",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    val intent = Intent(this, LockScreenActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Toast.makeText(this, "Заполните поле !!!", Toast.LENGTH_SHORT).show()
+                }
             }
         }
-
     }
 
     private fun addPassword(model:Password){

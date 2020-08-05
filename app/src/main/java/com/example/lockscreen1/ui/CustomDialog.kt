@@ -21,10 +21,11 @@ class CustomDialog(private val activity: LockScreenActivity) : Dialog(activity) 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.custom)
         dao=PasswordDatabase.getInstance(activity).dao()
-        val a=dao.getAllContact()
+        val a=dao.getPassword()
         val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
         btnPositive.setOnClickListener {
             if(etPasswordDeActivator.text.toString()==a.key){
+                dao.deletePassword(a)
                 activity.finish()
             }else{
                 etPasswordDeActivator.text.clear()

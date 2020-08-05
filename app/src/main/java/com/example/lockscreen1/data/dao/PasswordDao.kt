@@ -1,9 +1,6 @@
 package com.example.lockscreen1.data.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.lockscreen1.data.model.Password
 
 @Dao
@@ -12,5 +9,8 @@ interface PasswordDao {
     fun insertContact(model:Password)
 
     @Query("SELECT * FROM password")
-    fun getAllContact():Password
+    fun getPassword():Password
+
+    @Delete
+    fun deletePassword(model: Password)
 }
