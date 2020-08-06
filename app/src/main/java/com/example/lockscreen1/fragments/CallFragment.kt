@@ -4,13 +4,16 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
 import kotlinx.android.synthetic.main.call_fragment.*
@@ -19,6 +22,7 @@ class CallFragment : Fragment(R.layout.call_fragment) {
     private val REQUEST_CALL = 1
     private lateinit var mTextView: TextView
     private lateinit var number:String
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,7 +40,9 @@ class CallFragment : Fragment(R.layout.call_fragment) {
         btn_num8.setOnClickListener{ setTextFields("8")}
         btn_num9.setOnClickListener{ setTextFields("9")}
         btn_star.setOnClickListener { setTextFields("*") }
-        btn_reshetka.setOnClickListener { setTextFields("") }
+        btn_reshetka.setOnClickListener {
+            setTextFields("#")
+        }
         mTextView = tvEnter
         btn_call.setOnClickListener {
             makePhoneCall()
@@ -64,7 +70,8 @@ class CallFragment : Fragment(R.layout.call_fragment) {
                     Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CALL_PHONE), REQUEST_CALL)
             } else {
-                val dial = "tel:$number"
+                val a=Uri.encode(number)
+                val dial = "tel:$a"
                 startActivity(Intent(Intent.ACTION_CALL, Uri.parse(dial)))
             }
         } else {
