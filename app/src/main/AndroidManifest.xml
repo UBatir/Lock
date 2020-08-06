@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
 
     <application
         android:allowBackup="true"
@@ -24,8 +25,7 @@
         android:screenOrientation="portrait"
         android:theme="@style/AppTheme">
         <activity android:name="com.example.lockscreen1.ui.LockScreenActivity"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait">
 
         </activity>
         <activity android:name="com.example.lockscreen1.ui.MainActivity"
