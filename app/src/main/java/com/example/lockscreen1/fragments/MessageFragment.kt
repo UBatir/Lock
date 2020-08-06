@@ -10,9 +10,9 @@ class MessageFragment : Fragment(R.layout.message_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_APP_MESSAGING)
-        startActivity(intent)
+//        val intent = Intent(Intent.ACTION_MAIN)
+//        intent.addCategory(Intent.CATEGORY_APP_MESSAGING)
+//        startActivity(intent)
 
     }
 }

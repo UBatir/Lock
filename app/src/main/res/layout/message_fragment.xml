@@ -1,6 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="match_parent"
+        android:id="@+id/gdSms1"
+        app:layout_constraintGuide_percent="0.08"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="match_parent"
+        android:id="@+id/gdSms2"
+        app:layout_constraintGuide_percent="0.90"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/etKomu"
+        android:layout_width="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:padding="8dp"
+        android:background="@drawable/custom_input"
+        android:layout_marginEnd="12dp"
+        android:layout_height="wrap_content"
+        android:hint=" Кому"
+        android:maxLines="1"
+        android:maxLength="15"
+        app:layout_constraintStart_toStartOf="@+id/gdSms1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/gdSms2"/>
+
+    <EditText
+        android:id="@+id/etSendSms"
+        android:layout_width="0dp"
+        android:background="@drawable/custom_input"
+        android:layout_marginBottom="8dp"
+        android:maxLines="15"
+        android:maxLength="170"
+        android:layout_height="wrap_content"
+        android:hint=" Введите сообщение"
+        android:padding="10dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/gdSms2"/>
+
+    <ImageView
+        android:id="@+id/btnSendSms"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="2dp"
+        app:layout_constraintStart_toStartOf="@id/gdSms2"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/etSendSms"
+        app:layout_constraintTop_toTopOf="@id/etSendSms"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_baseline_send_24"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
