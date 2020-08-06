@@ -55,17 +55,18 @@ class CallFragment : Fragment(R.layout.call_fragment) {
 
     private fun setTextFields(str:String){
         tvEnter.append(str)
+        number = tvEnter.text.toString()
     }
 
 
     private fun makePhoneCall() {
-        number = tvEnter.text.toString()
         if (number.trim { it <= ' ' }.isNotEmpty()) {
             if (ContextCompat.checkSelfPermission(requireContext(),
                     Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CALL_PHONE), REQUEST_CALL)
             } else {
-                val dial = "tel:$number"
+                val a = Uri.encode(number)
+                val dial = "tel:$a"
                 startActivity(Intent(Intent.ACTION_CALL, Uri.parse(dial)))
             }
         } else {
