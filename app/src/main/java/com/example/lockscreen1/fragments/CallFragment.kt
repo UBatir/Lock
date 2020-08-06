@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
 import com.example.lockscreen1.ui.CallInterface
 import kotlinx.android.synthetic.main.call_fragment.*
+import kotlinx.android.synthetic.main.rv_item.*
 
 class CallFragment : Fragment(R.layout.call_fragment) {
     private val REQUEST_CALL = 1
@@ -60,6 +61,7 @@ class CallFragment : Fragment(R.layout.call_fragment) {
 
 
     private fun makePhoneCall() {
+
         if (number.trim { it <= ' ' }.isNotEmpty()) {
             if (ContextCompat.checkSelfPermission(requireContext(),
                     Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -68,6 +70,8 @@ class CallFragment : Fragment(R.layout.call_fragment) {
                 val a = Uri.encode(number)
                 val dial = "tel:$a"
                 startActivity(Intent(Intent.ACTION_CALL, Uri.parse(dial)))
+                Toast.makeText(requireContext(),"Идет набор на номер ",Toast.LENGTH_LONG).show()
+
             }
         } else {
             Toast.makeText(requireContext(), "Enter Phone Number", Toast.LENGTH_SHORT).show()
