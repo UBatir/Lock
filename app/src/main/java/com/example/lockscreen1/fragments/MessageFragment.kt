@@ -1,16 +1,11 @@
 package com.example.lockscreen1.fragments
 
-import android.Manifest.permission_group.SMS
-import android.R.attr.phoneNumber
-import android.app.PendingIntent
-import android.content.Intent
 import android.os.Bundle
-import android.telephony.SmsManager
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
-import com.example.lockscreen1.ui.SenderSms
+import com.example.lockscreen1.interfaces.SenderSms
 import kotlinx.android.synthetic.main.message_fragment.*
 
 

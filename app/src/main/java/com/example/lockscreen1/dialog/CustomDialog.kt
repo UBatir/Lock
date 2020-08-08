@@ -1,4 +1,4 @@
-package com.example.lockscreen1.ui
+package com.example.lockscreen1.dialog
 
 import android.app.Dialog
 import android.content.Context
@@ -10,8 +10,9 @@ import android.widget.Toast
 import com.example.lockscreen1.R
 import com.example.lockscreen1.data.PasswordDatabase
 import com.example.lockscreen1.data.dao.PasswordDao
+import com.example.lockscreen1.interfaces.DestroyActivity
+import com.example.lockscreen1.ui.LockScreenActivity
 import kotlinx.android.synthetic.main.custom.*
-import java.util.*
 
 
 class CustomDialog(private val activity: LockScreenActivity, private val listener: DestroyActivity) : Dialog(activity) {

@@ -6,39 +6,35 @@ import android.app.ActivityManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.icu.math.MathContext.PLAIN
-import android.net.Uri
-import android.net.http.HttpResponseCache
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.telephony.SmsManager
-import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.webkit.HttpAuthHandler
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
 import com.example.lockscreen1.data.PasswordDatabase
 import com.example.lockscreen1.data.dao.PasswordDao
+import com.example.lockscreen1.dialog.CustomDialog
 import com.example.lockscreen1.fragments.CallFragment
 import com.example.lockscreen1.fragments.ContactFragment
+import com.example.lockscreen1.fragments.InLineCallFragment
 import com.example.lockscreen1.fragments.MessageFragment
+import com.example.lockscreen1.interfaces.DestroyActivity
+import com.example.lockscreen1.interfaces.SenderSms
 import kotlinx.android.synthetic.main.activity_lock_screen.*
-import org.apache.http.params.HttpConnectionParams
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
-import java.net.HttpRetryException
-import java.net.HttpURLConnection
 
 
-class LockScreenActivity : AppCompatActivity(), DestroyActivity, SenderSms {
+class LockScreenActivity : AppCompatActivity(),
+    DestroyActivity, SenderSms {
     private val callFragment = CallFragment()
+    private val inLineCallFragment = InLineCallFragment()
     private val smsFragment = MessageFragment(this)
     private val contactFragment = ContactFragment()
     lateinit var dao: PasswordDao
@@ -57,7 +53,7 @@ class LockScreenActivity : AppCompatActivity(), DestroyActivity, SenderSms {
         setSupportActionBar(toolbar)
         dao = PasswordDatabase.getInstance(this).dao()
 
-        makeCurrentFragment(CallFragment())
+        makeCurrentFragment(callFragment)
 
         bottomNav.setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -78,7 +74,8 @@ class LockScreenActivity : AppCompatActivity(), DestroyActivity, SenderSms {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.exit -> {
-                val dialog = CustomDialog(this, this)
+                val dialog =
+                    CustomDialog(this, this)
                 dialog.show()
                 return true
             }
@@ -197,5 +194,7 @@ class LockScreenActivity : AppCompatActivity(), DestroyActivity, SenderSms {
         sms.sendTextMessage(number, null, text, pi, null)
         Toast.makeText(this, "отправлено", Toast.LENGTH_SHORT).show()
     }
+
+
 
 }

@@ -13,13 +13,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
-import com.example.lockscreen1.ui.CallInterface
+import com.example.lockscreen1.interfaces.CallInterface
 import com.example.lockscreen1.ui.ContactAdapter
-import com.example.lockscreen1.ui.ContactData
+import com.example.lockscreen1.data.ContactData
 import kotlinx.android.synthetic.main.contacts_framgent.*
 
 
-class ContactFragment : Fragment(R.layout.contacts_framgent), CallInterface {
+class ContactFragment : Fragment(R.layout.contacts_framgent),
+    CallInterface {
     var contacts = ArrayList<String?>()
     var addBtn: Button? = null
     private val mAdapter = ContactAdapter(this)
@@ -74,7 +75,12 @@ class ContactFragment : Fragment(R.layout.contacts_framgent), CallInterface {
                 val numberContact = cursor.getString(
                     cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
 
-                mAdapter.item.add(ContactData(contact, numberContact))
+                mAdapter.item.add(
+                    ContactData(
+                        contact,
+                        numberContact
+                    )
+                )
 
             }
             cursor.close()
