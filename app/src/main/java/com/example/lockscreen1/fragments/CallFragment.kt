@@ -3,17 +3,20 @@ package com.example.lockscreen1.fragments
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
 import com.example.lockscreen1.extentions.addCharacter
 import com.example.lockscreen1.extentions.config
 import com.example.lockscreen1.extentions.getKeyEvent
+import com.example.lockscreen1.extentions.startCallIntent
 import com.example.lockscreen1.helpers.SpeedDial
-import com.example.lockscreen1.interfaces.CallContact
+import com.example.lockscreen1.ui.SimpleActivity
 import com.simplemobiletools.commons.extensions.applyColorFilter
 import com.simplemobiletools.commons.extensions.getMyContactsCursor
 import com.simplemobiletools.commons.extensions.performHapticFeedback
@@ -24,13 +27,14 @@ import kotlinx.android.synthetic.main.dialpad.*
 import java.util.*
 
 
-class CallFragment(private val listener: CallContact): Fragment(R.layout.call_fragment) {
+class CallFragment: Fragment(R.layout.call_fragment) {
 
     private var allContacts = ArrayList<SimpleContact>()
     private var speedDialValues = ArrayList<SpeedDial>()
     private var privateCursor: Cursor? = null
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         speedDialValues = context?.config!!.getSpeedDialValues()
@@ -47,15 +51,15 @@ class CallFragment(private val listener: CallContact): Fragment(R.layout.call_fr
         dialpad_8.setOnClickListener { dialpadPressed('8', it) }
         dialpad_9.setOnClickListener { dialpadPressed('9', it) }
 
-//        dialpad_1.setOnLongClickListener { speedDial(1); true }
-//        dialpad_2.setOnLongClickListener { speedDial(2); true }
-//        dialpad_3.setOnLongClickListener { speedDial(3); true }
-//        dialpad_4.setOnLongClickListener { speedDial(4); true }
-//        dialpad_5.setOnLongClickListener { speedDial(5); true }
-//        dialpad_6.setOnLongClickListener { speedDial(6); true }
-//        dialpad_7.setOnLongClickListener { speedDial(7); true }
-//        dialpad_8.setOnLongClickListener { speedDial(8); true }
-//        dialpad_9.setOnLongClickListener { speedDial(9); true }
+        dialpad_1.setOnLongClickListener { speedDial(1); true }
+        dialpad_2.setOnLongClickListener { speedDial(2); true }
+        dialpad_3.setOnLongClickListener { speedDial(3); true }
+        dialpad_4.setOnLongClickListener { speedDial(4); true }
+        dialpad_5.setOnLongClickListener { speedDial(5); true }
+        dialpad_6.setOnLongClickListener { speedDial(6); true }
+        dialpad_7.setOnLongClickListener { speedDial(7); true }
+        dialpad_8.setOnLongClickListener { speedDial(8); true }
+        dialpad_9.setOnLongClickListener { speedDial(9); true }
 
         dialpad_0_holder.setOnLongClickListener { dialpadPressed('+', null); true }
         dialpad_asterisk.setOnClickListener { dialpadPressed('*', it) }
@@ -63,8 +67,13 @@ class CallFragment(private val listener: CallContact): Fragment(R.layout.call_fr
         dialpad_clear_char.setOnClickListener { clearChar(it) }
         dialpad_clear_char.setOnLongClickListener { clearInput(); true }
         dialpad_call_button.setOnClickListener {
-            listener.callContact()
-        Toast.makeText(requireContext()," click", Toast.LENGTH_SHORT).show()
+            initCall()
+            val number = dialpad_input.text.toString()
+//            val fragment = InLineCallFragment()
+//            val fBundle = Bundle()
+//            fragment.arguments =  fBundle
+//            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container, fragment)?.commit()
+        Toast.makeText(requireContext(),"$number clicked", Toast.LENGTH_SHORT).show()
         }
        // SimpleContactsHelper(requireContext()).getAvailableContacts(false) { gotContacts(it) }
         disableKeyboardPopping()
@@ -107,13 +116,24 @@ class CallFragment(private val listener: CallContact): Fragment(R.layout.call_fr
         dialpad_input.showSoftInputOnFocus = false
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun initCall(number: String = dialpad_input.value) {
+        val a = SimpleActivity()
+        if (number.isNotEmpty()) {
+            a.startCallIntent(number)
+        }
+    }
 
-//    private fun speedDial(id: Int) {
-//        if (dialpad_input.value.isEmpty()) {
-//            val speedDial = speedDialValues.firstOrNull { it.id == id }
-//            if (speedDial?.isValid() == true) {
-//                initCall(speedDial.number)
-//            }
-//        }
-//    }
+    private fun speedDial(id: Int) {
+        if (dialpad_input.value.isEmpty()) {
+            val speedDial = speedDialValues.firstOrNull { it.id == id }
+            if (speedDial?.isValid() == true) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    initCall(speedDial.number)
+                }
+            }
+        }
+    }
+
+
 }

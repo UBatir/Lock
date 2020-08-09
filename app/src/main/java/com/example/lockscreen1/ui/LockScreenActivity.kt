@@ -24,19 +24,16 @@ import com.example.lockscreen1.fragments.CallFragment
 import com.example.lockscreen1.fragments.ContactFragment
 import com.example.lockscreen1.fragments.InLineCallFragment
 import com.example.lockscreen1.fragments.MessageFragment
-import com.example.lockscreen1.interfaces.CallContact
 import com.example.lockscreen1.interfaces.DestroyActivity
 import com.example.lockscreen1.interfaces.SenderSms
-import com.simplemobiletools.commons.extensions.value
 import kotlinx.android.synthetic.main.activity_lock_screen.*
-import kotlinx.android.synthetic.main.call_fragment.*
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
 
 class LockScreenActivity : AppCompatActivity(),
-    DestroyActivity, SenderSms, CallContact {
-    private val callFragment = CallFragment(this)
+    DestroyActivity, SenderSms{
+    private val callFragment = CallFragment()
     private val inLineCallFragment = InLineCallFragment()
     private val smsFragment = MessageFragment(this)
     private val contactFragment = ContactFragment()
@@ -45,7 +42,6 @@ class LockScreenActivity : AppCompatActivity(),
 
     // To keep track of activity's foreground/background status
     var isPaused = false
-
     var collapseNotificationHandler: Handler? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +53,7 @@ class LockScreenActivity : AppCompatActivity(),
         dao = PasswordDatabase.getInstance(this).dao()
 
         makeCurrentFragment(callFragment)
+
 
         bottomNav.setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -128,15 +125,6 @@ class LockScreenActivity : AppCompatActivity(),
             collapseNotificationHandler = Handler()
         }
 
-        // If window focus has been lost && activity is not in a paused state
-        // Its a valid check because showing of notification panel
-        // steals the focus from current activity's window, but does not
-        // 'pause' the activity
-
-        // If window focus has been lost && activity is not in a paused state
-        // Its a valid check because showing of notification panel
-        // steals the focus from current activity's window, but does not
-        // 'pause' the activity
         if (!currentFocus && !isPaused) {
 
             // Post a Runnable with some delay - currently set to 300 ms
@@ -176,10 +164,6 @@ class LockScreenActivity : AppCompatActivity(),
                         e.printStackTrace()
                     }
 
-                    // Check if the window focus has been returned
-                    // If it hasn't been returned, post this Runnable again
-                    // Currently, the delay is 100 ms. You can change this
-                    // value to suit your needs.
                     if (!currentFocus && !isPaused) {
                         collapseNotificationHandler!!.postDelayed(this, 100L)
                     }
@@ -197,14 +181,5 @@ class LockScreenActivity : AppCompatActivity(),
         sms.sendTextMessage(number, null, text, pi, null)
         Toast.makeText(this, "отправлено", Toast.LENGTH_SHORT).show()
     }
-
-    override fun callContact() {
-         fun initCall(number: String = dialpad_input.value) {
-            if (number.isNotEmpty()) {
-                startCallIntent(number)
-            }
-        }
-    }
-
 
 }
