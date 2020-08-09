@@ -24,16 +24,19 @@ import com.example.lockscreen1.fragments.CallFragment
 import com.example.lockscreen1.fragments.ContactFragment
 import com.example.lockscreen1.fragments.InLineCallFragment
 import com.example.lockscreen1.fragments.MessageFragment
+import com.example.lockscreen1.interfaces.CallContact
 import com.example.lockscreen1.interfaces.DestroyActivity
 import com.example.lockscreen1.interfaces.SenderSms
+import com.simplemobiletools.commons.extensions.value
 import kotlinx.android.synthetic.main.activity_lock_screen.*
+import kotlinx.android.synthetic.main.call_fragment.*
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
 
 class LockScreenActivity : AppCompatActivity(),
-    DestroyActivity, SenderSms {
-    private val callFragment = CallFragment()
+    DestroyActivity, SenderSms, CallContact {
+    private val callFragment = CallFragment(this)
     private val inLineCallFragment = InLineCallFragment()
     private val smsFragment = MessageFragment(this)
     private val contactFragment = ContactFragment()
@@ -195,6 +198,13 @@ class LockScreenActivity : AppCompatActivity(),
         Toast.makeText(this, "отправлено", Toast.LENGTH_SHORT).show()
     }
 
+    override fun callContact() {
+         fun initCall(number: String = dialpad_input.value) {
+            if (number.isNotEmpty()) {
+                startCallIntent(number)
+            }
+        }
+    }
 
 
 }

@@ -1,48 +1,30 @@
 package com.example.lockscreen1.fragments
 
-import android.annotation.SuppressLint
-import android.annotation.TargetApi
-import android.app.KeyguardManager
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.media.AudioManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.PowerManager
-import android.provider.Telephony
-import android.telecom.Call
-import android.telecom.TelecomManager
-import android.telephony.PhoneNumberUtils
-import android.telephony.TelephonyManager
-import android.view.*
-import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
+import android.view.KeyEvent
+import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
-import com.example.lockscreen1.data.ContactData
 import com.example.lockscreen1.extentions.addCharacter
-import com.example.lockscreen1.helpers.CallManager
-import com.simplemobiletools.commons.extensions.*
 import com.example.lockscreen1.extentions.config
 import com.example.lockscreen1.extentions.getKeyEvent
 import com.example.lockscreen1.helpers.SpeedDial
-import com.simplemobiletools.commons.helpers.*
+import com.example.lockscreen1.interfaces.CallContact
+import com.simplemobiletools.commons.extensions.applyColorFilter
+import com.simplemobiletools.commons.extensions.getMyContactsCursor
+import com.simplemobiletools.commons.extensions.performHapticFeedback
+import com.simplemobiletools.commons.extensions.value
 import com.simplemobiletools.commons.models.SimpleContact
 import kotlinx.android.synthetic.main.call_fragment.*
 import kotlinx.android.synthetic.main.dialpad.*
-import kotlinx.android.synthetic.main.inline_call.*
 import java.util.*
 
 
-class CallFragment: Fragment(R.layout.call_fragment) {
+class CallFragment(private val listener: CallContact): Fragment(R.layout.call_fragment) {
 
     private var allContacts = ArrayList<SimpleContact>()
     private var speedDialValues = ArrayList<SpeedDial>()
@@ -65,24 +47,26 @@ class CallFragment: Fragment(R.layout.call_fragment) {
         dialpad_8.setOnClickListener { dialpadPressed('8', it) }
         dialpad_9.setOnClickListener { dialpadPressed('9', it) }
 
-        dialpad_1.setOnLongClickListener { speedDial(1); true }
-        dialpad_2.setOnLongClickListener { speedDial(2); true }
-        dialpad_3.setOnLongClickListener { speedDial(3); true }
-        dialpad_4.setOnLongClickListener { speedDial(4); true }
-        dialpad_5.setOnLongClickListener { speedDial(5); true }
-        dialpad_6.setOnLongClickListener { speedDial(6); true }
-        dialpad_7.setOnLongClickListener { speedDial(7); true }
-        dialpad_8.setOnLongClickListener { speedDial(8); true }
-        dialpad_9.setOnLongClickListener { speedDial(9); true }
+//        dialpad_1.setOnLongClickListener { speedDial(1); true }
+//        dialpad_2.setOnLongClickListener { speedDial(2); true }
+//        dialpad_3.setOnLongClickListener { speedDial(3); true }
+//        dialpad_4.setOnLongClickListener { speedDial(4); true }
+//        dialpad_5.setOnLongClickListener { speedDial(5); true }
+//        dialpad_6.setOnLongClickListener { speedDial(6); true }
+//        dialpad_7.setOnLongClickListener { speedDial(7); true }
+//        dialpad_8.setOnLongClickListener { speedDial(8); true }
+//        dialpad_9.setOnLongClickListener { speedDial(9); true }
 
         dialpad_0_holder.setOnLongClickListener { dialpadPressed('+', null); true }
         dialpad_asterisk.setOnClickListener { dialpadPressed('*', it) }
         dialpad_hashtag.setOnClickListener { dialpadPressed('#', it) }
         dialpad_clear_char.setOnClickListener { clearChar(it) }
         dialpad_clear_char.setOnLongClickListener { clearInput(); true }
-        dialpad_call_button.setOnClickListener { initCall() }
-        dialpad_input.onTextChangeListener { dialpadValueChanged(it) }
-        SimpleContactsHelper(requireContext()).getAvailableContacts(false) { gotContacts(it) }
+        dialpad_call_button.setOnClickListener {
+            listener.callContact()
+        Toast.makeText(requireContext()," click", Toast.LENGTH_SHORT).show()
+        }
+       // SimpleContactsHelper(requireContext()).getAvailableContacts(false) { gotContacts(it) }
         disableKeyboardPopping()
 
 
@@ -124,48 +108,12 @@ class CallFragment: Fragment(R.layout.call_fragment) {
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        super.onActivityResult(requestCode, resultCode, resultData)
-        if (requestCode == REQUEST_CODE_SET_DEFAULT_DIALER) {
-            if (!isDefaultDialer()) {
-                finish()
-            } else {
-                initOutgoingCall()
-            }
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun initOutgoingCall() {
-        try {
-            getHandleToUse(intent, callNumber.toString()) { handle ->
-                Bundle().apply {
-                    putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, handle)
-                    putBoolean(TelecomManager.EXTRA_START_CALL_WITH_VIDEO_STATE, false)
-                    putBoolean(TelecomManager.EXTRA_START_CALL_WITH_SPEAKERPHONE, false)
-                    telecomManager.placeCall(callNumber, this)
-                }
-                finish()
-            }
-        } catch (e: Exception) {
-            showErrorToast(e)
-            finish()
-        }
-    }
-
-
-    private fun initCall(number: String = dialpad_input.value) {
-        if (number.isNotEmpty()) {
-            startCallIntent(number)
-        }
-    }
-
-    private fun speedDial(id: Int) {
-        if (dialpad_input.value.isEmpty()) {
-            val speedDial = speedDialValues.firstOrNull { it.id == id }
-            if (speedDial?.isValid() == true) {
-                initCall(speedDial.number)
-            }
-        }
-    }
+//    private fun speedDial(id: Int) {
+//        if (dialpad_input.value.isEmpty()) {
+//            val speedDial = speedDialValues.firstOrNull { it.id == id }
+//            if (speedDial?.isValid() == true) {
+//                initCall(speedDial.number)
+//            }
+//        }
+//    }
 }

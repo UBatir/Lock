@@ -8,4 +8,6 @@
     <string name="call_ending">Cal ending</string>
     <string name="ongoing_call">on going call</string>
     <string name="unknown_caller">неизветный номер</string>
+    <string name="select_sim">Выбрать симкарту для звонка</string>
+    <string name="always_use_this_sim">Использовать эту симкару по умолчанию</string>
 </resources>
