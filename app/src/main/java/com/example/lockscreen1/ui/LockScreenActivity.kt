@@ -22,7 +22,6 @@ import com.example.lockscreen1.data.dao.PasswordDao
 import com.example.lockscreen1.dialog.CustomDialog
 import com.example.lockscreen1.fragments.CallFragment
 import com.example.lockscreen1.fragments.ContactFragment
-import com.example.lockscreen1.fragments.InLineCallFragment
 import com.example.lockscreen1.fragments.MessageFragment
 import com.example.lockscreen1.interfaces.DestroyActivity
 import com.example.lockscreen1.interfaces.SenderSms
@@ -34,7 +33,6 @@ import java.lang.reflect.Method
 class LockScreenActivity : AppCompatActivity(),
     DestroyActivity, SenderSms{
     private val callFragment = CallFragment()
-    private val inLineCallFragment = InLineCallFragment()
     private val smsFragment = MessageFragment(this)
     private val contactFragment = ContactFragment()
     lateinit var dao: PasswordDao

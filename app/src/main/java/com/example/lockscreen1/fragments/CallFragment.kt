@@ -1,43 +1,39 @@
 package com.example.lockscreen1.fragments
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.telecom.TelecomManager
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
 import com.example.lockscreen1.extentions.addCharacter
-import com.example.lockscreen1.extentions.config
 import com.example.lockscreen1.extentions.getKeyEvent
-import com.example.lockscreen1.extentions.startCallIntent
-import com.example.lockscreen1.helpers.SpeedDial
-import com.example.lockscreen1.ui.SimpleActivity
-import com.simplemobiletools.commons.extensions.applyColorFilter
 import com.simplemobiletools.commons.extensions.getMyContactsCursor
 import com.simplemobiletools.commons.extensions.performHapticFeedback
-import com.simplemobiletools.commons.extensions.value
-import com.simplemobiletools.commons.models.SimpleContact
 import kotlinx.android.synthetic.main.call_fragment.*
 import kotlinx.android.synthetic.main.dialpad.*
-import java.util.*
 
 
 class CallFragment: Fragment(R.layout.call_fragment) {
 
-    private var allContacts = ArrayList<SimpleContact>()
-    private var speedDialValues = ArrayList<SpeedDial>()
     private var privateCursor: Cursor? = null
+    private val REQUEST_CALL = 1
 
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        speedDialValues = context?.config!!.getSpeedDialValues()
         privateCursor = activity?.getMyContactsCursor()?.loadInBackground()
 
         dialpad_0_holder.setOnClickListener { dialpadPressed('0', it) }
@@ -51,52 +47,27 @@ class CallFragment: Fragment(R.layout.call_fragment) {
         dialpad_8.setOnClickListener { dialpadPressed('8', it) }
         dialpad_9.setOnClickListener { dialpadPressed('9', it) }
 
-        dialpad_1.setOnLongClickListener { speedDial(1); true }
-        dialpad_2.setOnLongClickListener { speedDial(2); true }
-        dialpad_3.setOnLongClickListener { speedDial(3); true }
-        dialpad_4.setOnLongClickListener { speedDial(4); true }
-        dialpad_5.setOnLongClickListener { speedDial(5); true }
-        dialpad_6.setOnLongClickListener { speedDial(6); true }
-        dialpad_7.setOnLongClickListener { speedDial(7); true }
-        dialpad_8.setOnLongClickListener { speedDial(8); true }
-        dialpad_9.setOnLongClickListener { speedDial(9); true }
-
         dialpad_0_holder.setOnLongClickListener { dialpadPressed('+', null); true }
         dialpad_asterisk.setOnClickListener { dialpadPressed('*', it) }
         dialpad_hashtag.setOnClickListener { dialpadPressed('#', it) }
         dialpad_clear_char.setOnClickListener { clearChar(it) }
+        btnEndCall.setOnClickListener {
+            endCall()
+        }
         dialpad_clear_char.setOnLongClickListener { clearInput(); true }
         dialpad_call_button.setOnClickListener {
-            initCall()
             val number = dialpad_input.text.toString()
-//            val fragment = InLineCallFragment()
-//            val fBundle = Bundle()
-//            fragment.arguments =  fBundle
-//            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container, fragment)?.commit()
-        Toast.makeText(requireContext(),"$number clicked", Toast.LENGTH_SHORT).show()
+        //makePhoneCall()
+        startCall()
+            val fragment = InLineCall()
+            val mBundle = Bundle()
+            fragment.arguments = mBundle
+            activity?.supportFragmentManager?.beginTransaction()!!
+                .replace(R.id.fragment_container,fragment)
+            Toast.makeText(requireContext(),"Идет набор на номер : $number", Toast.LENGTH_SHORT).show()
         }
-       // SimpleContactsHelper(requireContext()).getAvailableContacts(false) { gotContacts(it) }
         disableKeyboardPopping()
-
-
     }
-    override fun onResume() {
-        super.onResume()
-        dialpad_clear_char.applyColorFilter(context?.config!!.textColor)
-    }
-
-
-    private fun checkDialIntent(): Boolean {
-        return if ((activity?.intent?.action == Intent.ACTION_DIAL || activity?.intent?.action == Intent.ACTION_VIEW) && activity?.intent?.data != null && activity?.intent?.dataString?.contains("tel:") == true) {
-            val number = Uri.decode(activity?.intent?.dataString).substringAfter("tel:")
-            dialpad_input.setText(number)
-            dialpad_input.setSelection(number.length)
-            true
-        } else {
-            false
-        }
-    }
-
 
     private fun dialpadPressed(char: Char, view: View?) {
         dialpad_input.addCharacter(char)
@@ -116,24 +87,82 @@ class CallFragment: Fragment(R.layout.call_fragment) {
         dialpad_input.showSoftInputOnFocus = false
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun initCall(number: String = dialpad_input.value) {
-        val a = SimpleActivity()
-        if (number.isNotEmpty()) {
-            a.startCallIntent(number)
+
+    private fun makePhoneCall() {
+        val number = dialpad_input.text.toString()
+        if (number.trim { it <= ' ' }.isNotEmpty()) {
+            if (ContextCompat.checkSelfPermission(requireContext(),
+                    Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CALL_PHONE), REQUEST_CALL)
+            } else {
+                val a = Uri.encode(number)
+                val dial = "tel:$a"
+                startActivity(Intent(Intent.ACTION_CALL, Uri.parse(dial)))
+                Toast.makeText(requireContext(),"Идет набор на номер ",Toast.LENGTH_LONG).show()
+
+            }
+        } else {
+            Toast.makeText(requireContext(), "Enter Phone Number", Toast.LENGTH_SHORT).show()
         }
     }
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+        if (requestCode == REQUEST_CALL) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                makePhoneCall()
+                startCall()
+            } else {
+                Toast.makeText(requireContext(), "Permission DENIED", Toast.LENGTH_SHORT).show()
+            }
+        } else if (requestCode == REQUEST_CALL) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-    private fun speedDial(id: Int) {
-        if (dialpad_input.value.isEmpty()) {
-            val speedDial = speedDialValues.firstOrNull { it.id == id }
-            if (speedDial?.isValid() == true) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    initCall(speedDial.number)
-                }
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun startCall(){
+        val number = dialpad_input.text.toString()
+        val telecomManager = context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+        val uri = Uri.fromParts("tel", number, null)
+        val extras = Bundle()
+        extras.putBoolean(TelecomManager.EXTRA_START_CALL_WITH_SPEAKERPHONE, true)
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CALL_PHONE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            val intent = Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER)
+            intent.putExtra(
+                TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME,
+                activity!!.packageName
+            )
+            startActivity(intent)
+            return
+        }
+        telecomManager.placeCall(uri, extras)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun endCall(){
+        val permissionCheck =
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_PHONE_STATE)
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.READ_PHONE_STATE),
+                REQUEST_READ_PHONE_STATE
+            )
+        } else {
+            //TODO
+        }
+
+        val telecomManager = context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+            telecomManager.endCall()
+            return
+
+    }
 
 }
