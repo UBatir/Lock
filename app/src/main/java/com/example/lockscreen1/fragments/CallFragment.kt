@@ -29,7 +29,7 @@ class CallFragment: Fragment(R.layout.call_fragment) {
 
     private var privateCursor: Cursor? = null
     private val REQUEST_CALL = 1
-
+    private val REQUEST_READ_PHONE_STATE = 1
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,7 +57,6 @@ class CallFragment: Fragment(R.layout.call_fragment) {
         dialpad_clear_char.setOnLongClickListener { clearInput(); true }
         dialpad_call_button.setOnClickListener {
             val number = dialpad_input.text.toString()
-        //makePhoneCall()
         startCall()
             val fragment = InLineCall()
             val mBundle = Bundle()
@@ -110,7 +109,6 @@ class CallFragment: Fragment(R.layout.call_fragment) {
         if (requestCode == REQUEST_CALL) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 makePhoneCall()
-                startCall()
             } else {
                 Toast.makeText(requireContext(), "Permission DENIED", Toast.LENGTH_SHORT).show()
             }
@@ -147,21 +145,18 @@ class CallFragment: Fragment(R.layout.call_fragment) {
     @RequiresApi(Build.VERSION_CODES.P)
     fun endCall(){
         val permissionCheck =
-            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_PHONE_STATE)
-
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ANSWER_PHONE_CALLS)
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 requireActivity(),
-                arrayOf(Manifest.permission.READ_PHONE_STATE),
-                REQUEST_READ_PHONE_STATE
+                arrayOf(Manifest.permission.ANSWER_PHONE_CALLS),
+                0
             )
         } else {
-            //TODO
-        }
-
-        val telecomManager = context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+            val telecomManager = context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
             telecomManager.endCall()
             return
+        }
 
     }
 
