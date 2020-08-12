@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
+import com.example.lockscreen1.extentions.CallManager
 import com.example.lockscreen1.extentions.addCharacter
 import com.example.lockscreen1.extentions.getKeyEvent
 import com.simplemobiletools.commons.extensions.getMyContactsCursor
@@ -46,18 +47,18 @@ class CallFragment: Fragment(R.layout.call_fragment) {
         dialpad_7.setOnClickListener { dialpadPressed('7', it) }
         dialpad_8.setOnClickListener { dialpadPressed('8', it) }
         dialpad_9.setOnClickListener { dialpadPressed('9', it) }
-
         dialpad_0_holder.setOnLongClickListener { dialpadPressed('+', null); true }
         dialpad_asterisk.setOnClickListener { dialpadPressed('*', it) }
         dialpad_hashtag.setOnClickListener { dialpadPressed('#', it) }
         dialpad_clear_char.setOnClickListener { clearChar(it) }
         btnEndCall.setOnClickListener {
-            endCall()
+          //  endCall2()
+            rejectCall()
         }
         dialpad_clear_char.setOnLongClickListener { clearInput(); true }
         dialpad_call_button.setOnClickListener {
             val number = dialpad_input.text.toString()
-        startCall()
+            startCall()
             val fragment = InLineCall()
             val mBundle = Bundle()
             fragment.arguments = mBundle
@@ -160,4 +161,32 @@ class CallFragment: Fragment(R.layout.call_fragment) {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun endCall2(){
+        val number = ""
+        val telecomManager = context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+        val uri = Uri.fromParts("tel", number, null)
+        val extras = Bundle()
+        extras.putBoolean(TelecomManager.EXTRA_START_CALL_WITH_SPEAKERPHONE, true)
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CALL_PHONE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            val intent = Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER)
+            intent.putExtra(
+                TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME,
+                activity!!.packageName
+            )
+            startActivity(intent)
+            return
+        }
+        telecomManager.placeCall(uri, extras)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun rejectCall(){
+        CallManager.call!!.disconnect()
+
+    }
 }
