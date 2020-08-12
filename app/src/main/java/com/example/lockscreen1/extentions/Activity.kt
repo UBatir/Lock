@@ -9,6 +9,7 @@ import android.telecom.PhoneAccountHandle
 import android.telecom.TelecomManager
 import androidx.annotation.RequiresApi
 import com.example.lockscreen1.fragments.SelectSIMDialog
+import com.example.lockscreen1.ui.LockScreenActivity
 import com.example.lockscreen1.ui.SimpleActivity
 import com.simplemobiletools.commons.extensions.isDefaultDialer
 import com.simplemobiletools.commons.extensions.launchCallIntent
@@ -42,7 +43,7 @@ fun SimpleActivity.getHandleToUse(intent: Intent?, phoneNumber: String, callback
                 }
                 defaultHandle != null -> callback(defaultHandle)
                 else -> {
-                    SelectSIMDialog(this, phoneNumber) { handle ->
+                    SelectSIMDialog(parent as LockScreenActivity, phoneNumber) { handle ->
                         callback(handle)
                     }
                 }

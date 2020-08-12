@@ -10,13 +10,13 @@ import androidx.appcompat.app.AlertDialog
 import com.example.lockscreen1.R
 import com.example.lockscreen1.extentions.config
 import com.example.lockscreen1.extentions.getAvailableSIMCardLabels
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
+import com.example.lockscreen1.ui.LockScreenActivity
 import com.simplemobiletools.commons.extensions.setupDialogStuff
 import kotlinx.android.synthetic.main.dialog_select_sim.view.*
 
 
 @RequiresApi(Build.VERSION_CODES.M)
-class SelectSIMDialog(val activity: BaseSimpleActivity, val phoneNumber: String, val callback: (handle: PhoneAccountHandle) -> Unit){
+class SelectSIMDialog(val activity: LockScreenActivity, val phoneNumber: String, val callback: (handle: PhoneAccountHandle) -> Unit){
 
     private var dialog: AlertDialog? = null
     private val view = activity.layoutInflater.inflate(R.layout.dialog_select_sim, null)
