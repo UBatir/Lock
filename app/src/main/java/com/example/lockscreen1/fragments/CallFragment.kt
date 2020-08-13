@@ -57,21 +57,16 @@ class CallFragment: Fragment(R.layout.call_fragment) {
         dialpad_asterisk.setOnClickListener { dialpadPressed('*', it) }
         dialpad_hashtag.setOnClickListener { dialpadPressed('#', it) }
         dialpad_clear_char.setOnClickListener { clearChar(it) }
-        btnEndCall.setOnClickListener {
-            if (proximityWakeLock?.isHeld == true) {
-                proximityWakeLock!!.release()
-            }
-            endCall()
-        }
         dialpad_clear_char.setOnLongClickListener { clearInput(); true }
         dialpad_call_button.setOnClickListener {
             val number = dialpad_input.text.toString()
             startCall()
-            val fragment = InLineCall()
+            val mFragment = InLineCall()
             val mBundle = Bundle()
-            fragment.arguments = mBundle
+            mBundle.putString("number",number)
+            mFragment.arguments = mBundle
             activity?.supportFragmentManager?.beginTransaction()!!
-                .replace(R.id.fragment_container,fragment)
+                .replace(R.id.fragment_container,mFragment).commit()
             Toast.makeText(requireContext(),"Идет набор на номер : $number", Toast.LENGTH_SHORT).show()
         }
         disableKeyboardPopping()
@@ -145,24 +140,6 @@ class CallFragment: Fragment(R.layout.call_fragment) {
         }
     }
 
-
-    @RequiresApi(Build.VERSION_CODES.P)
-    fun endCall(){
-        val permissionCheck =
-            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ANSWER_PHONE_CALLS)
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ANSWER_PHONE_CALLS),
-                0
-            )
-        } else {
-            val telecomManager = context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
-            telecomManager.endCall()
-            return
-        }
-
-    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
