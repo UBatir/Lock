@@ -1,11 +1,14 @@
 package com.example.lockscreen1.ui
 
 import android.Manifest
+import android.Manifest.permission.READ_CONTACTS
+import android.Manifest.permission.SEND_SMS
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -15,6 +18,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
 import com.example.lockscreen1.data.PasswordDatabase
@@ -32,6 +36,8 @@ import java.lang.reflect.Method
 
 class LockScreenActivity : AppCompatActivity(),
     DestroyActivity, SenderSms{
+
+
     private val callFragment = CallFragment()
     private val smsFragment = MessageFragment(this)
     private val contactFragment = ContactFragment()
@@ -45,6 +51,8 @@ class LockScreenActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lock_screen)
+        ActivityCompat.requestPermissions(this, arrayOf(SEND_SMS,
+            READ_CONTACTS),123)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         setSupportActionBar(toolbar)
@@ -178,6 +186,18 @@ class LockScreenActivity : AppCompatActivity(),
         val sms: SmsManager = SmsManager.getDefault()
         sms.sendTextMessage(number, null, text, pi, null)
         Toast.makeText(this, "отправлено", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode==123){
+            if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+            }
+        }
     }
 
 }
