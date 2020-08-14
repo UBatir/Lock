@@ -4,25 +4,23 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.PowerManager
-import android.telecom.CallAudioState
 import android.telecom.TelecomManager
 import android.view.View
 import androidx.annotation.RequiresApi
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
+import com.example.lockscreen1.data.ContactData
 import com.example.lockscreen1.extentions.CallManager
 import com.example.lockscreen1.extentions.audioManager
 import com.simplemobiletools.commons.extensions.getFormattedDuration
 import com.simplemobiletools.commons.helpers.MINUTE_SECONDS
-import kotlinx.android.synthetic.main.call_fragment.*
 import kotlinx.android.synthetic.main.inline_call.*
 import java.util.*
 
@@ -35,31 +33,33 @@ class InLineCall: Fragment(R.layout.inline_call) {
     private var isMicrophoneOn = true
     private var isCallEnded = false
     private var callDuration = 0
-
-    @RequiresApi(Build.VERSION_CODES.M)
+    private var callContact: ContactData? = null
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initProximitySensor()
         val number=arguments?.getString("number")
         caller_number_label.text=number
         callTimer.scheduleAtFixedRate(getCallTimerUpdateTask(), 1000, 1000)
+        activity?.audioManager?.mode = AudioManager.MODE_IN_CALL
+        CallManager.getCallContact(requireContext()){contact ->
+            callContact = contact
+        }
+
         call_end.setOnClickListener {
             if (proximityWakeLock?.isHeld == true) {
                 proximityWakeLock!!.release()
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                endCall()
-            }
+            endCall()
+            val mFragment = CallFragment()
+            val mBundle = Bundle()
+            mFragment.arguments = mBundle
+            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container,mFragment)?.commit()
         }
-        call_toggle_microphone.setOnClickListener {
-            toggleMicrophone()
-        }
-        call_toggle_speaker.setOnClickListener {
-            toggleSpeaker()
-        }
+
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.P)
     fun endCall(){
         val permissionCheck =
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ANSWER_PHONE_CALLS)
@@ -89,8 +89,8 @@ class InLineCall: Fragment(R.layout.inline_call) {
                 }, 3000)
             }
         } else {
-            call_status_label.text = getString(R.string.call_ended)
-            activity?.finish()
+    //        call_status_label.text = getString(R.string.call_ended)
+           // activity?.finish()
             /*val mFragment = CallFragment()
                     val mBundle = Bundle()
                     mFragment.arguments = mBundle
@@ -100,32 +100,14 @@ class InLineCall: Fragment(R.layout.inline_call) {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun toggleMicrophone() {
-        isMicrophoneOn = !isMicrophoneOn
-        val drawable = if (isMicrophoneOn) R.drawable.ic_microphone_vector else R.drawable.ic_microphone_off_vector
-        call_toggle_microphone.setImageDrawable(context?.getDrawable(drawable))
-        context?.audioManager!!.isMicrophoneMute = !isMicrophoneOn
-        CallManager.inCallService?.setMuted(!isMicrophoneOn)
-    }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun toggleSpeaker() {
-        isSpeakerOn = !isSpeakerOn
-        val drawable = if (isSpeakerOn) R.drawable.ic_speaker_on_vector else R.drawable.ic_speaker_off_vector
-        call_toggle_speaker.setImageDrawable(context?.getDrawable(drawable))
-        context?.audioManager!!.isSpeakerphoneOn = isSpeakerOn
-
-        val newRoute = if (isSpeakerOn) CallAudioState.ROUTE_SPEAKER else CallAudioState.ROUTE_EARPIECE
-        CallManager.inCallService?.setAudioRoute(newRoute)
-    }
 
     private fun getCallTimerUpdateTask() = object : TimerTask() {
         override fun run() {
             callDuration++
             activity?.runOnUiThread {
                 if (!isCallEnded) {
-                    call_status_label.text = callDuration.getFormattedDuration()
+    //                call_status_label.text = callDuration.getFormattedDuration()
                 }
             }
         }

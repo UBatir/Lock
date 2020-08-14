@@ -29,7 +29,7 @@ fun SimpleActivity.startCallIntent(recipient: String){
 @RequiresApi(Build.VERSION_CODES.M)
 @SuppressLint("MissingPermission")
 fun SimpleActivity.getHandleToUse(intent: Intent?, phoneNumber: String, callback: (handle: PhoneAccountHandle) -> Unit) {
-    handlePermission(PERMISSION_READ_PHONE_STATE) {
+    handlePermission(PERMISSION_READ_PHONE_STATE) { it ->
         if (it) {
             val defaultHandle = telecomManager.getDefaultOutgoingPhoneAccount(PhoneAccount.SCHEME_TEL)
             when {
