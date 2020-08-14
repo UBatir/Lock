@@ -16,6 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -47,11 +48,12 @@ class LockScreenActivity : AppCompatActivity(),
     var isPaused = false
     var collapseNotificationHandler: Handler? = null
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lock_screen)
         ActivityCompat.requestPermissions(this, arrayOf(SEND_SMS,
-            READ_CONTACTS, READ_PHONE_STATE, CALL_PHONE),1)
+            READ_CONTACTS, READ_PHONE_STATE, CALL_PHONE, ANSWER_PHONE_CALLS),1)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         setSupportActionBar(toolbar)

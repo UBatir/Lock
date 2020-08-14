@@ -1,5 +1,6 @@
 package com.example.lockscreen1.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.View
@@ -54,6 +55,7 @@ open class MessageFragment(private val listener: SenderSms) : Fragment(R.layout.
     }
 
 
+    @SuppressLint("Recycle")
     private fun populatePeopleList() {
         mPeopleList.clear()
         val people = activity!!.contentResolver.query(
@@ -87,8 +89,8 @@ open class MessageFragment(private val listener: SenderSms) : Fragment(R.layout.
                     }
                 }
             }
-            people?.close()
-            activity!!.startManagingCursor(people)
+            people.close()
+           // activity!!.startManagingCursor(people)
         }
     }
 }
