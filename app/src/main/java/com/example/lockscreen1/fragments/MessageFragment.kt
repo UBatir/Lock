@@ -18,7 +18,6 @@ open class MessageFragment(private val listener: SenderSms) : Fragment(R.layout.
     private lateinit var mPeopleList:ArrayList<Map<String, String>>
     private lateinit var mAdapter: SimpleAdapter
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mPeopleList = ArrayList()
@@ -28,8 +27,6 @@ open class MessageFragment(private val listener: SenderSms) : Fragment(R.layout.
             intArrayOf(R.id.tvNameContact))
         etKomu.setAdapter(mAdapter)
         etKomu.setSelection(etKomu.text!!.length)
-
-
 
         etKomu.onItemClickListener =
             AdapterView.OnItemClickListener { av, _, index, _ ->

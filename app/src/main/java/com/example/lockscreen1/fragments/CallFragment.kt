@@ -1,15 +1,12 @@
 package com.example.lockscreen1.fragments
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.telecom.PhoneAccount
 import android.telecom.PhoneAccountHandle
 import android.telecom.TelecomManager
 import android.view.KeyEvent
@@ -25,9 +22,10 @@ import com.example.lockscreen1.extentions.getAvailableSIMCardLabels
 import com.example.lockscreen1.extentions.getKeyEvent
 import com.example.lockscreen1.ui.LockScreenActivity
 import com.simplemobiletools.commons.extensions.getMyContactsCursor
+import com.simplemobiletools.commons.extensions.getPermissionString
+import com.simplemobiletools.commons.extensions.hasPermission
 import com.simplemobiletools.commons.extensions.performHapticFeedback
-import com.simplemobiletools.commons.extensions.telecomManager
-import com.simplemobiletools.commons.helpers.REQUEST_CODE_SET_DEFAULT_DIALER
+import com.simplemobiletools.commons.helpers.PERMISSION_READ_PHONE_STATE
 import kotlinx.android.synthetic.main.call_fragment.*
 import kotlinx.android.synthetic.main.dialpad.*
 
@@ -35,6 +33,10 @@ import kotlinx.android.synthetic.main.dialpad.*
 class CallFragment: Fragment(R.layout.call_fragment) {
 
     private var privateCursor: Cursor? = null
+    var actionOnPermission: ((granted: Boolean) -> Unit)? = null
+    var isAskingPermissions = false
+    private val GENERIC_PERM_HANDLER = 100
+
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -100,91 +102,66 @@ class CallFragment: Fragment(R.layout.call_fragment) {
         dialpad_input.showSoftInputOnFocus = false
     }
 
-@SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission")
     @RequiresApi(Build.VERSION_CODES.M)
     fun startCall() {
-    val number = dialpad_input.text.toString()
-    if (number.isNotEmpty()) {
-        val telecomManager = context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
-        val uri = Uri.fromParts("tel", number, null)
-     //   val extras = Bundle()
-            startInitCall(activity?.intent,number){
-                Bundle().apply {
-                    putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, it)
-                    putBoolean(TelecomManager.EXTRA_START_CALL_WITH_VIDEO_STATE, false)
-                    putBoolean(TelecomManager.EXTRA_START_CALL_WITH_SPEAKERPHONE, false)
-                    telecomManager.placeCall(uri, this)
-                }
-            }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.M)
-fun startInitCall(intent: Intent?, phoneNumber: String, callback: (handle: PhoneAccountHandle) -> Unit){
-             if(ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.READ_PHONE_STATE
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                return
-            }
-    val defaultHandle = activity?.telecomManager?.getDefaultOutgoingPhoneAccount(PhoneAccount.SCHEME_TEL)
-
-
-    when {
-                intent?.hasExtra(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE) == true -> callback(intent.getParcelableExtra(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE)!!)
-                activity?.config?.getCustomSIM(phoneNumber)?.isNotEmpty() == true -> {
-                    val storedLabel = Uri.decode(activity?.config?.getCustomSIM(phoneNumber))
-                    val availableSIMs = activity?.getAvailableSIMCardLabels()
-                    val firstornull = availableSIMs?.firstOrNull { it.label == storedLabel }?.handle ?: availableSIMs?.first()?.handle
-                    if (firstornull != null) {
-                        callback(firstornull)
-                    }
-                }
-                defaultHandle != null -> callback(defaultHandle)
-                else -> {
-                    SelectSIMDialog(requireActivity() as LockScreenActivity, phoneNumber) { handle ->
-                        callback(handle)
+                val number = dialpad_input.text.toString()
+                if (number.isNotEmpty()) {
+                    val telecomManager =
+                        context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+                    val uri = Uri.fromParts("tel", number, null)
+                    //   val extras = Bundle()
+                    startInitCall(activity?.intent, number) {
+                        Bundle().apply {
+                            putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, it)
+                            putBoolean(TelecomManager.EXTRA_START_CALL_WITH_VIDEO_STATE, false)
+                            putBoolean(TelecomManager.EXTRA_START_CALL_WITH_SPEAKERPHONE, false)
+                            telecomManager.placeCall(uri, this)
+                        }
                     }
                 }
             }
-        }
-
-
-
-
-//    @RequiresApi(Build.VERSION_CODES.M)
-//    @SuppressLint("MissingPermission")
-//    fun getHandleToUse(intent: Intent?, phoneNumber: String, callback: (handle: PhoneAccountHandle) -> Unit) {
-//
-//            when {
-//                intent?.hasExtra(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE) == true -> callback(
-//                    intent.getParcelableExtra(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE)!!
-//                )
-//                context?.config?.getCustomSIM(phoneNumber)?.isNotEmpty() == true -> {
-//                    val storedLabel = Uri.decode(context?.config?.getCustomSIM(phoneNumber))
-//                    val availableSIMs = context!!.getAvailableSIMCardLabels()
-//                    val firstornull = availableSIMs.firstOrNull { it.label == storedLabel }?.handle
-//                        ?: availableSIMs.first().handle
-//                    callback(firstornull)
-//                }
-//                else -> {
-//                    SelectSIMDialog(requireActivity() as LockScreenActivity, phoneNumber) { handle ->
-//                        callback(handle)
-//                    }
-//                }
-//            }
-//
-//        }
-
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_SET_DEFAULT_DIALER) {
-
+    fun startInitCall(intent: Intent?, phoneNumber: String, callback: (handle: PhoneAccountHandle) -> Unit) {
+        handlePermission(PERMISSION_READ_PHONE_STATE) { it ->
+            if (it) {
+                when {
+                    intent?.hasExtra(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE) == true -> callback(
+                        intent.getParcelableExtra(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE)!!
+                    )
+                    activity?.config?.getCustomSIM(phoneNumber)?.isNotEmpty() == true -> {
+                        val storedLabel = Uri.decode(activity?.config?.getCustomSIM(phoneNumber))
+                        val availableSIMs = activity?.getAvailableSIMCardLabels()
+                        val firstornull =
+                            availableSIMs?.firstOrNull { it.label == storedLabel }?.handle
+                                ?: availableSIMs?.first()?.handle
+                        callback(firstornull!!)
+                    }
+                    else -> {
+                        SelectSIMDialog(
+                            requireActivity() as LockScreenActivity,
+                            phoneNumber
+                        ) { handle ->
+                            callback(handle)
+                        }
+                    }
+                }
+            }
         }
     }
+
+    private fun handlePermission(permissionId: Int, callback: (granted: Boolean) -> Unit) {
+        actionOnPermission = null
+        if (activity?.hasPermission(permissionId)!!) {
+            callback(true)
+        } else {
+            isAskingPermissions = true
+            actionOnPermission = callback
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(context?.getPermissionString(permissionId)), GENERIC_PERM_HANDLER)
+        }
+    }
+
 
 
 }

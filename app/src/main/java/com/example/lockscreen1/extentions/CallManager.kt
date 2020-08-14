@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.telecom.Call
-import android.telecom.InCallService
 import androidx.annotation.RequiresApi
 import com.example.lockscreen1.data.ContactData
 import com.simplemobiletools.commons.extensions.getMyContactsCursor
@@ -15,21 +14,7 @@ import com.simplemobiletools.commons.helpers.ensureBackgroundThread
 class CallManager {
     companion object{
         var call: Call? = null
-        var inCallService: InCallService? = null
-        @RequiresApi(Build.VERSION_CODES.M)
-        fun reject() {
-            if (call != null) {
-                if (call!!.state == Call.STATE_RINGING) {
-                    call!!.reject(false, null)
-                } else {
-                    call!!.disconnect()
-                }
-            }
-        }
-        @RequiresApi(Build.VERSION_CODES.M)
-        fun rejectCall(){
-            call!!.disconnect()
-        }
+
         @RequiresApi(Build.VERSION_CODES.M)
         fun getCallContact(context: Context, callback: (ContactData?) -> Unit) {
             val callContact = ContactData("", "")

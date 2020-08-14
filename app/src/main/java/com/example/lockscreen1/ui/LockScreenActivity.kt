@@ -1,8 +1,7 @@
 package com.example.lockscreen1.ui
 
 import android.Manifest
-import android.Manifest.permission.READ_CONTACTS
-import android.Manifest.permission.SEND_SMS
+import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.PendingIntent
@@ -52,7 +51,7 @@ class LockScreenActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lock_screen)
         ActivityCompat.requestPermissions(this, arrayOf(SEND_SMS,
-            READ_CONTACTS),123)
+            READ_CONTACTS, READ_PHONE_STATE, CALL_PHONE),1)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         setSupportActionBar(toolbar)
@@ -194,7 +193,7 @@ class LockScreenActivity : AppCompatActivity(),
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode==123){
+        if(requestCode==1){
             if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
             }
         }
