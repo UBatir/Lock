@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lock Screen</string>
+    <string name="app_name">Button phone</string>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
     <string name="call_ended">Call ended</string>
@@ -9,6 +9,6 @@
     <string name="ongoing_call">on going call</string>
     <string name="unknown_caller">неизветный номер</string>
     <string name="select_sim">Выбрать симкарту для звонка</string>
-    <string name="always_use_this_sim">Использовать эту симкару по умолчанию</string>
+    <string name="always_use_this_sim">Использовать эту симкарту по умолчанию</string>
     <string name="app_launcher_name">Lock Screen</string>
 </resources>
