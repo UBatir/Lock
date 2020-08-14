@@ -1,43 +1,43 @@
 package com.example.lockscreen1.ui
 
 import android.Manifest
+import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.icu.math.MathContext.PLAIN
-import android.net.Uri
-import android.net.http.HttpResponseCache
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.telephony.SmsManager
-import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.webkit.HttpAuthHandler
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
 import com.example.lockscreen1.data.PasswordDatabase
 import com.example.lockscreen1.data.dao.PasswordDao
+import com.example.lockscreen1.dialog.CustomDialog
 import com.example.lockscreen1.fragments.CallFragment
 import com.example.lockscreen1.fragments.ContactFragment
 import com.example.lockscreen1.fragments.MessageFragment
+import com.example.lockscreen1.interfaces.DestroyActivity
+import com.example.lockscreen1.interfaces.SenderSms
 import kotlinx.android.synthetic.main.activity_lock_screen.*
-import org.apache.http.params.HttpConnectionParams
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
-import java.net.HttpRetryException
-import java.net.HttpURLConnection
 
 
-class LockScreenActivity : AppCompatActivity(), DestroyActivity, SenderSms {
+class LockScreenActivity : AppCompatActivity(),
+    DestroyActivity, SenderSms{
+
+
     private val callFragment = CallFragment()
     private val smsFragment = MessageFragment(this)
     private val contactFragment = ContactFragment()
@@ -46,18 +46,21 @@ class LockScreenActivity : AppCompatActivity(), DestroyActivity, SenderSms {
 
     // To keep track of activity's foreground/background status
     var isPaused = false
-
     var collapseNotificationHandler: Handler? = null
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lock_screen)
+        ActivityCompat.requestPermissions(this, arrayOf(SEND_SMS,
+            READ_CONTACTS, READ_PHONE_STATE, CALL_PHONE, ANSWER_PHONE_CALLS),1)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         setSupportActionBar(toolbar)
         dao = PasswordDatabase.getInstance(this).dao()
 
-        makeCurrentFragment(CallFragment())
+        makeCurrentFragment(callFragment)
+
 
         bottomNav.setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -78,7 +81,8 @@ class LockScreenActivity : AppCompatActivity(), DestroyActivity, SenderSms {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.exit -> {
-                val dialog = CustomDialog(this, this)
+                val dialog =
+                    CustomDialog(this, this)
                 dialog.show()
                 return true
             }
@@ -128,15 +132,6 @@ class LockScreenActivity : AppCompatActivity(), DestroyActivity, SenderSms {
             collapseNotificationHandler = Handler()
         }
 
-        // If window focus has been lost && activity is not in a paused state
-        // Its a valid check because showing of notification panel
-        // steals the focus from current activity's window, but does not
-        // 'pause' the activity
-
-        // If window focus has been lost && activity is not in a paused state
-        // Its a valid check because showing of notification panel
-        // steals the focus from current activity's window, but does not
-        // 'pause' the activity
         if (!currentFocus && !isPaused) {
 
             // Post a Runnable with some delay - currently set to 300 ms
@@ -176,10 +171,6 @@ class LockScreenActivity : AppCompatActivity(), DestroyActivity, SenderSms {
                         e.printStackTrace()
                     }
 
-                    // Check if the window focus has been returned
-                    // If it hasn't been returned, post this Runnable again
-                    // Currently, the delay is 100 ms. You can change this
-                    // value to suit your needs.
                     if (!currentFocus && !isPaused) {
                         collapseNotificationHandler!!.postDelayed(this, 100L)
                     }
@@ -196,6 +187,18 @@ class LockScreenActivity : AppCompatActivity(), DestroyActivity, SenderSms {
         val sms: SmsManager = SmsManager.getDefault()
         sms.sendTextMessage(number, null, text, pi, null)
         Toast.makeText(this, "отправлено", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode==1){
+            if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+            }
+        }
     }
 
 }

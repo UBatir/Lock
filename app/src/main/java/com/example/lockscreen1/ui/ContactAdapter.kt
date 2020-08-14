@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lockscreen1.R
+import com.example.lockscreen1.data.ContactData
+import com.example.lockscreen1.interfaces.CallInterface
 import kotlinx.android.synthetic.main.rv_item.view.*
 
 class ContactAdapter(private val listener: CallInterface): RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
