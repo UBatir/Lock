@@ -34,6 +34,20 @@ open class CallManager {
             }
         }
         @RequiresApi(Build.VERSION_CODES.M)
+        fun getState() = if (call == null) {
+            Call.STATE_DISCONNECTED
+        } else {
+            call!!.state
+        }
+
+        @RequiresApi(Build.VERSION_CODES.M)
+        fun registerCallback(callback: Call.Callback) {
+            if (call != null) {
+                call!!.registerCallback(callback)
+            }
+        }
+
+        @RequiresApi(Build.VERSION_CODES.M)
         fun getCallContact(context: Context, callback: (ContactData?) -> Unit) {
             val callContact = ContactData("", "")
             if (call == null || call!!.details == null || call!!.details!!.handle == null) {

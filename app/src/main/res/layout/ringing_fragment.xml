@@ -44,31 +44,11 @@
         app:layout_constraintTop_toBottomOf="@+id/caller_number_label"
         tools:text="Is Calling" />
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/ongoing_call_holder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-        <ImageView
-            android:id="@+id/call_end"
-            android:layout_width="@dimen/dialpad_button_size"
-            android:layout_height="@dimen/dialpad_button_size"
-            android:contentDescription="@string/decline"
-            android:src="@drawable/ic_call_decline"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.9" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/incoming_call_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        >
 
         <ImageView
             android:id="@+id/call_decline"
@@ -121,4 +101,8 @@
             app:layout_constraintTop_toBottomOf="@+id/call_accept" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
