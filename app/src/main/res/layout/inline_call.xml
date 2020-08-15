@@ -49,7 +49,7 @@
         android:id="@+id/ongoing_call_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        >
         <ImageView
             android:id="@+id/call_end"
             android:layout_width="@dimen/dialpad_button_size"

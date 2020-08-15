@@ -7,11 +7,13 @@ import android.app.ActivityManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.telephony.SmsManager
+import android.telephony.TelephonyManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -27,6 +29,7 @@ import com.example.lockscreen1.dialog.CustomDialog
 import com.example.lockscreen1.fragments.CallFragment
 import com.example.lockscreen1.fragments.ContactFragment
 import com.example.lockscreen1.fragments.MessageFragment
+import com.example.lockscreen1.fragments.RingingFragment
 import com.example.lockscreen1.interfaces.DestroyActivity
 import com.example.lockscreen1.interfaces.SenderSms
 import kotlinx.android.synthetic.main.activity_lock_screen.*
@@ -43,10 +46,11 @@ class LockScreenActivity : AppCompatActivity(),
     private val contactFragment = ContactFragment()
     lateinit var dao: PasswordDao
     var currentFocus = false
-
     // To keep track of activity's foreground/background status
     var isPaused = false
     var collapseNotificationHandler: Handler? = null
+
+
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,8 +64,6 @@ class LockScreenActivity : AppCompatActivity(),
         dao = PasswordDatabase.getInstance(this).dao()
 
         makeCurrentFragment(callFragment)
-
-
 
 
         bottomNav.setOnNavigationItemSelectedListener {
@@ -203,5 +205,20 @@ class LockScreenActivity : AppCompatActivity(),
         }
     }
 
+    fun phoneCallCheck(){
+        val callStateReceiver = InComingCallReceiver()
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED)
+            registerReceiver(callStateReceiver, intentFilter)
+            Toast.makeText(this, "идет звонок", Toast.LENGTH_SHORT).show()
+            val fragment = RingingFragment()
+            val mBundle = Bundle()
+            fragment.arguments = mBundle
+            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                .commit()
+
+    }
+
 }
+
 

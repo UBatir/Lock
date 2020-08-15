@@ -55,7 +55,7 @@
             </intent-filter>
         </service>
         <receiver
-            android:name=".ui.InCommingCallReceiver"
+            android:name=".ui.InComingCallReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

@@ -6,13 +6,13 @@ import android.telecom.Call
 import android.telecom.InCallService
 import androidx.annotation.RequiresApi
 import com.example.lockscreen1.extentions.CallManager
-import com.example.lockscreen1.ui.InCommingCallReceiver
+import com.example.lockscreen1.ui.InComingCallReceiver
 
 @RequiresApi(Build.VERSION_CODES.M)
 class CallService : InCallService() {
     override fun onCallAdded(call: Call) {
         super.onCallAdded(call)
-        val intent = Intent(this, InCommingCallReceiver::class.java)
+        val intent = Intent(this, InComingCallReceiver::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         CallManager.call = call
