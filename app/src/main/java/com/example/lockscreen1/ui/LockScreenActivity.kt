@@ -37,7 +37,7 @@ import java.lang.reflect.Method
 class LockScreenActivity : AppCompatActivity(),
     DestroyActivity, SenderSms{
 
-
+    private val Incoming = InCommingCallReceiver()
     private val callFragment = CallFragment()
     private val smsFragment = MessageFragment(this)
     private val contactFragment = ContactFragment()
@@ -200,5 +200,7 @@ class LockScreenActivity : AppCompatActivity(),
             }
         }
     }
+
+
 
 }
