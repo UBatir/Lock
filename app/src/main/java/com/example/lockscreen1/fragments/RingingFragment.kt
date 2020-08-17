@@ -12,12 +12,24 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
+import com.example.lockscreen1.data.ContactData
 import kotlinx.android.synthetic.main.ringing_fragment.*
 
 class RingingFragment: Fragment(R.layout.ringing_fragment) {
+    var callContact: ContactData? = null
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+//        val phoneNumber = arguments!!.getString("number")
+//        caller_number_label.text =  phoneNumber
+
+//        if (phoneNumber.isNullOrEmpty() && phoneNumber == callContact!!.number ){
+//            caller_name_label.text = callContact!!.name
+//        }else{
+//            caller_name_label.text = "Неизвестный номер"
+//        }
+
 
         call_decline.setOnClickListener {
             endCall()

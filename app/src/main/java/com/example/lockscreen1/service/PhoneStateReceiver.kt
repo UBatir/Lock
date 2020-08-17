@@ -5,22 +5,31 @@ import android.content.Context
 import android.content.Intent
 import android.telephony.TelephonyManager
 import android.widget.Toast
+import com.example.lockscreen1.ui.LockScreenActivity
+
 
 open  class PhoneStateReceiver: BroadcastReceiver() {
-    private var listener: ((Int) -> Unit)? = null
-
     override fun onReceive(context: Context, intent: Intent) {
 
-            val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
+        val extras = intent.extras
+        if (extras != null) {
+            val state = extras.getString(TelephonyManager.EXTRA_STATE)
             if (state == TelephonyManager.EXTRA_STATE_RINGING) {
-                Toast.makeText(context, "Ringing State Number", Toast.LENGTH_SHORT).show()
-                val isCalling = 1
-                listener?.invoke(isCalling)
+                val phoneNumber = extras
+                    .getString(TelephonyManager.EXTRA_INCOMING_NUMBER)
+                val isCalling = true
+                val i = Intent(context, LockScreenActivity::class.java)
+                i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                i.putExtra("InComingCall", isCalling)
+                i.putExtra("number", phoneNumber)
+                Toast.makeText(context, phoneNumber, Toast.LENGTH_LONG).show()
+                context.startActivity(i)
 
             }
+        }
+
     }
 
-    fun setListener(listenerX: (Int) -> Unit) {
-        listener = listenerX
-    }
 }
+
+

@@ -30,7 +30,6 @@ import com.example.lockscreen1.fragments.MessageFragment
 import com.example.lockscreen1.fragments.RingingFragment
 import com.example.lockscreen1.interfaces.DestroyActivity
 import com.example.lockscreen1.interfaces.SenderSms
-import com.example.lockscreen1.service.PhoneStateReceiver
 import kotlinx.android.synthetic.main.activity_lock_screen.*
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
@@ -48,7 +47,7 @@ class LockScreenActivity : AppCompatActivity(),
     // To keep track of activity's foreground/background status
     var isPaused = false
     var collapseNotificationHandler: Handler? = null
-    private val phone = PhoneStateReceiver()
+   // private val phone = PhoneStateReceiver()
 
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -63,15 +62,18 @@ class LockScreenActivity : AppCompatActivity(),
         dao = PasswordDatabase.getInstance(this).dao()
 
         makeCurrentFragment(callFragment)
-
-       phone.setListener {
-           if (it==1){
-               val fragment = RingingFragment()
-               val mBundle = Bundle()
-               fragment.arguments = mBundle
-               supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit()
-           }
-       }
+        val call=intent.getBooleanExtra("InComingCall", false)
+        val number = intent.getStringExtra("number")
+        if (call){
+            val fragment = RingingFragment()
+            val mBundle = Bundle()
+            fragment.arguments = mBundle
+            mBundle.putString("number", number)
+            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                .commit()
+        }else{
+            makeCurrentFragment(callFragment)
+        }
 
         bottomNav.setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -212,14 +214,7 @@ class LockScreenActivity : AppCompatActivity(),
         }
     }
 
-    fun phoneCallCheck(){
-            val fragment = RingingFragment()
-            val mBundle = Bundle()
-            fragment.arguments = mBundle
-            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
-                .commit()
 
-    }
 
 //    override fun ringingCall(call: Int) {
 //        if (call == 1){
