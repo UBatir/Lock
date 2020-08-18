@@ -20,14 +20,36 @@ import kotlinx.android.synthetic.main.ringing_fragment.*
 
 
 class RingingFragment: Fragment(R.layout.ringing_fragment) {
-    var callContact: ContactData? = null
-    private lateinit var phoneNumber:String
+
+    private fun contactExists(context: Context, number: String?): Boolean {
+        val lookupUri = Uri.withAppendedPath(
+            ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+            Uri.encode(number)
+        )
+        val mPhoneNumberProjection =
+            arrayOf(ContactsContract.PhoneLookup._ID, ContactsContract.PhoneLookup.NUMBER, ContactsContract.PhoneLookup.DISPLAY_NAME)
+        val cur: Cursor? =
+            context.contentResolver.query(lookupUri, mPhoneNumberProjection, null, null, null)
+        cur.use { cur ->
+            if (cur!!.moveToFirst()) {
+                val contactName = cur.getString(cur
+                    .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+                caller_name_label.text=contactName
+                cur.close()
+                return true
+            }
+        }
+        caller_name_label.text="Неизвестный номер"
+        return false
+    }
+
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val phoneNumber = activity!!.intent.getStringExtra("number")
         caller_number_label.text =  phoneNumber
+        contactExists(context!!,phoneNumber)
 
 
 

@@ -3,6 +3,9 @@ package com.example.lockscreen1.service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
+import android.provider.ContactsContract
 import android.telephony.TelephonyManager
 import android.widget.Toast
 import com.example.lockscreen1.ui.LockScreenActivity
@@ -27,9 +30,7 @@ open  class PhoneStateReceiver: BroadcastReceiver() {
 
             }
         }
-
     }
-
 }
 
 
