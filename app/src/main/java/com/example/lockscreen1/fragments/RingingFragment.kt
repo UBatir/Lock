@@ -3,8 +3,11 @@ package com.example.lockscreen1.fragments
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.database.Cursor
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.telecom.TelecomManager
 import android.view.View
 import androidx.annotation.RequiresApi
@@ -15,20 +18,18 @@ import com.example.lockscreen1.R
 import com.example.lockscreen1.data.ContactData
 import kotlinx.android.synthetic.main.ringing_fragment.*
 
+
 class RingingFragment: Fragment(R.layout.ringing_fragment) {
     var callContact: ContactData? = null
+    private lateinit var phoneNumber:String
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        val phoneNumber = arguments!!.getString("number")
-//        caller_number_label.text =  phoneNumber
+        val phoneNumber = activity!!.intent.getStringExtra("number")
+        caller_number_label.text =  phoneNumber
 
-//        if (phoneNumber.isNullOrEmpty() && phoneNumber == callContact!!.number ){
-//            caller_name_label.text = callContact!!.name
-//        }else{
-//            caller_name_label.text = "Неизвестный номер"
-//        }
+
 
 
         call_decline.setOnClickListener {
@@ -36,14 +37,20 @@ class RingingFragment: Fragment(R.layout.ringing_fragment) {
             val fFragment = CallFragment()
             val mBundle = Bundle()
             fFragment.arguments = mBundle
-            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container, fFragment)?.commit()
+            activity?.supportFragmentManager?.beginTransaction()?.replace(
+                R.id.fragment_container,
+                fFragment
+            )?.commit()
         }
         call_accept.setOnClickListener {
             acceptCall()
             val fragment = InLineCall()
             val mBundle = Bundle()
             fragment.arguments = mBundle
-            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container, fragment)?.commit()
+            activity?.supportFragmentManager?.beginTransaction()?.replace(
+                R.id.fragment_container,
+                fragment
+            )?.commit()
 
         }
 
@@ -91,4 +98,5 @@ class RingingFragment: Fragment(R.layout.ringing_fragment) {
         }
 
     }
+
 }

@@ -24,6 +24,12 @@ import com.simplemobiletools.commons.extensions.beGone
 import com.simplemobiletools.commons.extensions.beVisible
 import com.simplemobiletools.commons.helpers.MINUTE_SECONDS
 import kotlinx.android.synthetic.main.inline_call.*
+import kotlinx.android.synthetic.main.inline_call.call_accept
+import kotlinx.android.synthetic.main.inline_call.call_decline
+import kotlinx.android.synthetic.main.inline_call.call_status_label
+import kotlinx.android.synthetic.main.inline_call.caller_number_label
+import kotlinx.android.synthetic.main.inline_call.incoming_call_holder
+import kotlinx.android.synthetic.main.ringing_fragment.*
 
 class InLineCall: Fragment(R.layout.inline_call) {
 

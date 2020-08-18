@@ -63,12 +63,10 @@ class LockScreenActivity : AppCompatActivity(),
 
         makeCurrentFragment(callFragment)
         val call=intent.getBooleanExtra("InComingCall", false)
-        val number = intent.getStringExtra("number")
         if (call){
             val fragment = RingingFragment()
             val mBundle = Bundle()
             fragment.arguments = mBundle
-            mBundle.putString("number", number)
             supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                 .commit()
         }else{
@@ -213,16 +211,6 @@ class LockScreenActivity : AppCompatActivity(),
             }
         }
     }
-
-
-
-//    override fun ringingCall(call: Int) {
-//        if (call == 1){
-//            phoneCallCheck()
-//        }
-//    }
-
-
 }
 
 
