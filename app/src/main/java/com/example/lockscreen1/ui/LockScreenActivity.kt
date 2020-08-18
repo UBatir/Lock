@@ -55,7 +55,7 @@ class LockScreenActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lock_screen)
         ActivityCompat.requestPermissions(this, arrayOf(SEND_SMS,
-            READ_CONTACTS, READ_PHONE_STATE, CALL_PHONE, ANSWER_PHONE_CALLS),1)
+            READ_CONTACTS, READ_PHONE_STATE, CALL_PHONE, ANSWER_PHONE_CALLS, READ_CALL_LOG),1)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         setSupportActionBar(toolbar)
@@ -70,6 +70,8 @@ class LockScreenActivity : AppCompatActivity(),
             }
             true
         }
+
+
         val call=intent.getBooleanExtra("InComingCall", false)
         if (call){
             val fragment = RingingFragment()

@@ -10,13 +10,11 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.telecom.TelecomManager
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.lockscreen1.R
-import com.example.lockscreen1.data.ContactData
 import kotlinx.android.synthetic.main.ringing_fragment.*
 
 
@@ -48,14 +46,12 @@ class RingingFragment: Fragment(R.layout.ringing_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val phoneNumber = activity!!.intent.getStringExtra("number")
+        val phoneNumber = activity!!.intent.getStringExtra("inComingNumber")
         caller_number_label.text =  phoneNumber
         contactExists(context!!,phoneNumber)
         val a=activity!!.intent.getIntExtra("InComingCall", 0)
         if(a==1){
             activity!!.finish()
-        }else{
-            Toast.makeText(requireContext(),"Manis kelmey tur!!!",Toast.LENGTH_LONG).show()
         }
 
 

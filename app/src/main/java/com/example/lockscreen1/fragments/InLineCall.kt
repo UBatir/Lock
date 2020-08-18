@@ -4,10 +4,13 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.media.AudioManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
+import android.provider.ContactsContract
 import android.telecom.Call
 import android.telecom.TelecomManager
 import android.view.View
@@ -24,12 +27,6 @@ import com.simplemobiletools.commons.extensions.beGone
 import com.simplemobiletools.commons.extensions.beVisible
 import com.simplemobiletools.commons.helpers.MINUTE_SECONDS
 import kotlinx.android.synthetic.main.inline_call.*
-import kotlinx.android.synthetic.main.inline_call.call_accept
-import kotlinx.android.synthetic.main.inline_call.call_decline
-import kotlinx.android.synthetic.main.inline_call.call_status_label
-import kotlinx.android.synthetic.main.inline_call.caller_number_label
-import kotlinx.android.synthetic.main.inline_call.incoming_call_holder
-import kotlinx.android.synthetic.main.ringing_fragment.*
 
 class InLineCall: Fragment(R.layout.inline_call) {
 
@@ -41,6 +38,11 @@ class InLineCall: Fragment(R.layout.inline_call) {
         initProximitySensor()
         val number=arguments?.getString("number")
         caller_number_label.text=number
+
+        val phoneNumber = activity!!.intent.getStringExtra("inComingNumber")
+        caller_number_label.text =  phoneNumber
+        contactExists(context!!,phoneNumber)
+
         activity?.audioManager?.mode = AudioManager.MODE_IN_CALL
         CallManager.getCallContact(requireContext()){contact ->
             callContact = contact
@@ -55,13 +57,30 @@ class InLineCall: Fragment(R.layout.inline_call) {
             }
             endCall()
             activity!!.finish()
-//            val mFragment = CallFragment()
-//            val mBundle = Bundle()
-//            mFragment.arguments = mBundle
-//            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container,mFragment)?.commit()
         }
     }
 
+    private fun contactExists(context: Context, number: String?): Boolean {
+        val lookupUri = Uri.withAppendedPath(
+            ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+            Uri.encode(number)
+        )
+        val mPhoneNumberProjection =
+            arrayOf(ContactsContract.PhoneLookup._ID, ContactsContract.PhoneLookup.NUMBER, ContactsContract.PhoneLookup.DISPLAY_NAME)
+        val cur: Cursor? =
+            context.contentResolver.query(lookupUri, mPhoneNumberProjection, null, null, null)
+        cur.use { cur ->
+            if (cur!!.moveToFirst()) {
+                val contactName = cur.getString(cur
+                    .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+                caller_name.text=contactName
+                cur.close()
+                return true
+            }
+        }
+        caller_name.text="Неизвестный номер"
+        return false
+    }
 
 
     @RequiresApi(Build.VERSION_CODES.Q)

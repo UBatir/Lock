@@ -71,11 +71,6 @@ open class CallFragment: Fragment(R.layout.call_fragment) {
                 mFragment.arguments = mBundle
                 activity?.supportFragmentManager?.beginTransaction()!!
                     .replace(R.id.fragment_container, mFragment).commit()
-                Toast.makeText(
-                    requireContext(),
-                    "Идет набор на номер : $number",
-                    Toast.LENGTH_SHORT
-                ).show()
             } else {
                 Toast.makeText(
                     requireContext(),
