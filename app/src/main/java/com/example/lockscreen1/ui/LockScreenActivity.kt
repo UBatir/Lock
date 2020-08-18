@@ -62,17 +62,6 @@ class LockScreenActivity : AppCompatActivity(),
         dao = PasswordDatabase.getInstance(this).dao()
 
         makeCurrentFragment(callFragment)
-        val call=intent.getBooleanExtra("InComingCall", false)
-        if (call){
-            val fragment = RingingFragment()
-            val mBundle = Bundle()
-            fragment.arguments = mBundle
-            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
-                .commit()
-        }else{
-            makeCurrentFragment(callFragment)
-        }
-
         bottomNav.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.call -> makeCurrentFragment(callFragment)
@@ -80,6 +69,14 @@ class LockScreenActivity : AppCompatActivity(),
                 R.id.contacts -> makeCurrentFragment(contactFragment)
             }
             true
+        }
+        val call=intent.getBooleanExtra("InComingCall", false)
+        if (call){
+            val fragment = RingingFragment()
+            val mBundle = Bundle()
+            fragment.arguments = mBundle
+            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                .commit()
         }
 
     }

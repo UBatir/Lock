@@ -27,7 +27,18 @@ open  class PhoneStateReceiver: BroadcastReceiver() {
                 i.putExtra("number", phoneNumber)
                 Toast.makeText(context, phoneNumber, Toast.LENGTH_LONG).show()
                 context.startActivity(i)
-
+            }
+            if(state==TelephonyManager.EXTRA_STATE_IDLE){
+                Toast.makeText(context,"Zvanok jabildi", Toast.LENGTH_LONG).show()
+                val phoneNumber = extras
+                    .getString(TelephonyManager.EXTRA_INCOMING_NUMBER)
+                val a = 1
+                val i = Intent(context, LockScreenActivity::class.java)
+                i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                i.putExtra("InComingCall", a)
+                i.putExtra("number", phoneNumber)
+                Toast.makeText(context, phoneNumber, Toast.LENGTH_LONG).show()
+                context.startActivity(i)
             }
         }
     }

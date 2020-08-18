@@ -54,10 +54,11 @@ class InLineCall: Fragment(R.layout.inline_call) {
                 proximityWakeLock!!.release()
             }
             endCall()
-            val mFragment = CallFragment()
-            val mBundle = Bundle()
-            mFragment.arguments = mBundle
-            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container,mFragment)?.commit()
+            activity!!.finish()
+//            val mFragment = CallFragment()
+//            val mBundle = Bundle()
+//            mFragment.arguments = mBundle
+//            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container,mFragment)?.commit()
         }
     }
 
