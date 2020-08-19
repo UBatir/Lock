@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.telephony.TelephonyManager
+import android.widget.Toast
 import com.example.lockscreen1.ui.LockScreenActivity
 
 
@@ -28,6 +29,13 @@ open  class PhoneStateReceiver: BroadcastReceiver() {
                 val i = Intent(context, LockScreenActivity::class.java)
                 i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 i.putExtra("InComingCall", a)
+                context.startActivity(i)
+            }
+            if(state==TelephonyManager.EXTRA_STATE_OFFHOOK){
+                val b = 1
+                val i = Intent(context, LockScreenActivity::class.java)
+                i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                i.putExtra("OutGoingCall", b)
                 context.startActivity(i)
             }
         }

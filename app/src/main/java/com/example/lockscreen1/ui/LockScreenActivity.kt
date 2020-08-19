@@ -38,16 +38,13 @@ import java.lang.reflect.Method
 class LockScreenActivity : AppCompatActivity(),
     DestroyActivity, SenderSms{
 
-   // private val Incoming = InCommingCallReceiver()
     private val callFragment = CallFragment()
     private val smsFragment = MessageFragment(this)
     private val contactFragment = ContactFragment()
     lateinit var dao: PasswordDao
     var currentFocus = false
-    // To keep track of activity's foreground/background status
     var isPaused = false
     var collapseNotificationHandler: Handler? = null
-   // private val phone = PhoneStateReceiver()
 
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -135,16 +132,12 @@ class LockScreenActivity : AppCompatActivity(),
     }
 
     private fun collapseNow() {
-        // Initialize 'collapseNotificationHandler'
-
-        // Initialize 'collapseNotificationHandler'
         if (collapseNotificationHandler == null) {
             collapseNotificationHandler = Handler()
         }
 
         if (!currentFocus && !isPaused) {
 
-            // Post a Runnable with some delay - currently set to 300 ms
             collapseNotificationHandler!!.postDelayed(object : Runnable {
                 @SuppressLint("WrongConstant")
                 override fun run() {
