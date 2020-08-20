@@ -49,16 +49,21 @@ class RingingFragment: Fragment(R.layout.ringing_fragment) {
         val phoneNumber = activity!!.intent.getStringExtra("inComingNumber")
         caller_number_label.text =  phoneNumber
         contactExists(context!!,phoneNumber)
-        val a=activity!!.intent.getIntExtra("InComingCall", 0)
-        if(a==1){
-            activity!!.finish()
-        }
 
 
 
         call_decline.setOnClickListener {
             endCall()
-            activity!!.finish()
+           // activity!!.finish()
+            val fragment = CallFragment()
+            val mBundle = Bundle()
+            fragment.arguments = mBundle
+            activity?.supportFragmentManager?.beginTransaction()?.replace(
+                R.id.fragment_container,
+                fragment
+            )?.commit()
+
+
         }
         call_accept.setOnClickListener {
             acceptCall()

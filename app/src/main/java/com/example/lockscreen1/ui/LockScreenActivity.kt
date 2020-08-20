@@ -120,6 +120,7 @@ class LockScreenActivity : AppCompatActivity(),
 
     override fun destroyActivity() {
         finish()
+        finishAffinity()
         onDestroy()
     }
 
