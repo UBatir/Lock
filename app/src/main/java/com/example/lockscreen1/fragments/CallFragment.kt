@@ -31,7 +31,6 @@ import kotlinx.android.synthetic.main.dialpad.*
 
 
 open class CallFragment: Fragment(R.layout.call_fragment) {
-    private var callNumber: Uri? = null
     private var privateCursor: Cursor? = null
     var actionOnPermission: ((granted: Boolean) -> Unit)? = null
     var isAskingPermissions = false

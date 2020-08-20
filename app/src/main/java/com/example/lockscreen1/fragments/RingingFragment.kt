@@ -54,7 +54,6 @@ class RingingFragment: Fragment(R.layout.ringing_fragment) {
 
         call_decline.setOnClickListener {
             endCall()
-           // activity!!.finish()
             val fragment = CallFragment()
             val mBundle = Bundle()
             fragment.arguments = mBundle
@@ -119,7 +118,5 @@ class RingingFragment: Fragment(R.layout.ringing_fragment) {
             telecomManager.acceptRingingCall()
             return
         }
-
     }
-
 }

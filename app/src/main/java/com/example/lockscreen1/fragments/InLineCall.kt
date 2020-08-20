@@ -155,16 +155,10 @@ class InLineCall: Fragment(R.layout.inline_call) {
     private fun updateCallState(state: Int) {
         when (state) {
             Call.STATE_RINGING ->{callRinging()
-                Toast.makeText(requireContext(), "Ringing?", Toast.LENGTH_SHORT).show()
-
             }
             Call.STATE_ACTIVE -> {callStarted()
-                Toast.makeText(requireContext(), "start?", Toast.LENGTH_SHORT).show()
-
             }
             Call.STATE_DISCONNECTED -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                Toast.makeText(requireContext(), "end", Toast.LENGTH_SHORT).show()
-
                 endCall()
             }
             Call.STATE_CONNECTING, Call.STATE_DIALING -> initOutgoingCallUI()
