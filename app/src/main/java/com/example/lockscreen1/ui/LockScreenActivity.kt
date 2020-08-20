@@ -27,6 +27,7 @@ import com.example.lockscreen1.dialog.CustomDialog
 import com.example.lockscreen1.fragments.CallFragment
 import com.example.lockscreen1.fragments.ContactFragment
 import com.example.lockscreen1.fragments.MessageFragment
+import com.example.lockscreen1.fragments.RingingFragment
 import com.example.lockscreen1.interfaces.DestroyActivity
 import com.example.lockscreen1.interfaces.SenderSms
 import kotlinx.android.synthetic.main.activity_lock_screen.*
@@ -37,31 +38,27 @@ import java.lang.reflect.Method
 class LockScreenActivity : AppCompatActivity(),
     DestroyActivity, SenderSms{
 
-
     private val callFragment = CallFragment()
     private val smsFragment = MessageFragment(this)
     private val contactFragment = ContactFragment()
     lateinit var dao: PasswordDao
     var currentFocus = false
-
-    // To keep track of activity's foreground/background status
     var isPaused = false
     var collapseNotificationHandler: Handler? = null
+
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lock_screen)
         ActivityCompat.requestPermissions(this, arrayOf(SEND_SMS,
-            READ_CONTACTS, READ_PHONE_STATE, CALL_PHONE, ANSWER_PHONE_CALLS),1)
+            READ_CONTACTS, READ_PHONE_STATE, CALL_PHONE, ANSWER_PHONE_CALLS, READ_CALL_LOG),1)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         setSupportActionBar(toolbar)
         dao = PasswordDatabase.getInstance(this).dao()
 
         makeCurrentFragment(callFragment)
-
-
         bottomNav.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.call -> makeCurrentFragment(callFragment)
@@ -69,6 +66,16 @@ class LockScreenActivity : AppCompatActivity(),
                 R.id.contacts -> makeCurrentFragment(contactFragment)
             }
             true
+        }
+
+
+        val call=intent.getBooleanExtra("InComingCall", false)
+        if (call){
+            val fragment = RingingFragment()
+            val mBundle = Bundle()
+            fragment.arguments = mBundle
+            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                .commit()
         }
 
     }
@@ -113,6 +120,7 @@ class LockScreenActivity : AppCompatActivity(),
 
     override fun destroyActivity() {
         finish()
+        finishAffinity()
         onDestroy()
     }
 
@@ -125,16 +133,12 @@ class LockScreenActivity : AppCompatActivity(),
     }
 
     private fun collapseNow() {
-        // Initialize 'collapseNotificationHandler'
-
-        // Initialize 'collapseNotificationHandler'
         if (collapseNotificationHandler == null) {
             collapseNotificationHandler = Handler()
         }
 
         if (!currentFocus && !isPaused) {
 
-            // Post a Runnable with some delay - currently set to 300 ms
             collapseNotificationHandler!!.postDelayed(object : Runnable {
                 @SuppressLint("WrongConstant")
                 override fun run() {
@@ -200,5 +204,6 @@ class LockScreenActivity : AppCompatActivity(),
             }
         }
     }
-
 }
+
+

@@ -30,17 +30,20 @@ import kotlinx.android.synthetic.main.call_fragment.*
 import kotlinx.android.synthetic.main.dialpad.*
 
 
-class CallFragment: Fragment(R.layout.call_fragment) {
-
+open class CallFragment: Fragment(R.layout.call_fragment) {
+    private var callNumber: Uri? = null
     private var privateCursor: Cursor? = null
     var actionOnPermission: ((granted: Boolean) -> Unit)? = null
     var isAskingPermissions = false
     private val GENERIC_PERM_HANDLER = 100
 
+    @SuppressLint("NewApi")
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         privateCursor = activity?.getMyContactsCursor()?.loadInBackground()
+
+
 
         dialpad_0_holder.setOnClickListener { dialpadPressed('0', it) }
         dialpad_1.setOnClickListener { dialpadPressed('1', it) }
@@ -68,11 +71,6 @@ class CallFragment: Fragment(R.layout.call_fragment) {
                 mFragment.arguments = mBundle
                 activity?.supportFragmentManager?.beginTransaction()!!
                     .replace(R.id.fragment_container, mFragment).commit()
-                Toast.makeText(
-                    requireContext(),
-                    "Идет набор на номер : $number",
-                    Toast.LENGTH_SHORT
-                ).show()
             } else {
                 Toast.makeText(
                     requireContext(),
@@ -161,7 +159,5 @@ class CallFragment: Fragment(R.layout.call_fragment) {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(context?.getPermissionString(permissionId)), GENERIC_PERM_HANDLER)
         }
     }
-
-
 
 }
